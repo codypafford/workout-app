@@ -1,0 +1,18 @@
+.logs-overview__list {
+  list-style: none;
+  padding: 0;
+}
+
+.logs-overview__item {
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.logs-overview__link {
+  text-decoration: none;
+  color: #c5c2c2;
+}
+
+.logs-overview__link:hover {
+  text-decoration: underline;
+}

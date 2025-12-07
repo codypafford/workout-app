@@ -1,0 +1,30 @@
+.workout-view__container {
+    /* TODO: undo me */
+  background: #f4f4f4; 
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Header bar */
+.workout-view__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f4f4f4;
+  padding: 12px 16px;
+  border-radius: 8px;
+  /* margin-bottom: 16px; */
+}
+
+/* Title text */
+.workout-view__title {
+  color: black;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Icon inside the button */
+.workout-view__add-icon {
+  font-size: 20px;
+  line-height: 1;
+}
