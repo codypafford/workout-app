@@ -8,6 +8,7 @@ const WorkoutList = ({ items, groupName }) => {
 
   const [expandedItemId, setExpandedItemId] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [enlargedImage, setEnlargedImage] = useState(null) // new state for image modal
 
   const toggleItem = (id) => {
     setExpandedItemId((prev) => (prev === id ? null : id))
@@ -51,11 +52,11 @@ const WorkoutList = ({ items, groupName }) => {
               />
 
               {/* Main Row */}
-              <div className={`${ROOT_CN}__row`}>
-                <div
-                  className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}
-                  onClick={() => toggleItem(item.id)}
-                >
+              <div
+                className={`${ROOT_CN}__row`}
+                onClick={() => toggleItem(item.id)}
+              >
+                <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
                   {item.name}
                 </div>
 
@@ -65,16 +66,21 @@ const WorkoutList = ({ items, groupName }) => {
                       src={item.image}
                       alt='thumb'
                       className={`${ROOT_CN}__thumb`}
+                      onClick={(e) => {
+                        e.stopPropagation() // prevent expanding the row
+                        setEnlargedImage(item.image)
+                      }}
                     />
                   ) : (
                     <>
                       <button
                         className={`${ROOT_CN}__add-thumb-btn`}
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation()
                           document
                             .getElementById(`img-input-${item.id}`)
                             .click()
-                        }
+                        }}
                       >
                         +
                       </button>
@@ -160,6 +166,20 @@ const WorkoutList = ({ items, groupName }) => {
                     <button>Save Today's Workout</button>
                     <button>Delete</button>
                   </div>
+                </div>
+              )}
+
+              {/* Image Modal */}
+              {enlargedImage && (
+                <div
+                  className={`${ROOT_CN}__image-modal`}
+                  onClick={() => setEnlargedImage(null)}
+                >
+                  <img
+                    src={enlargedImage}
+                    alt='Enlarged'
+                    className={`${ROOT_CN}__image-modal-content`}
+                  />
                 </div>
               )}
             </div>
