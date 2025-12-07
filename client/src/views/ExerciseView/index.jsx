@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import './style.css'
 
@@ -7,22 +8,89 @@ const MOCK_EXERCISES = [
     name: 'Chest Press',
     photo: '/image.png',
     logs: [
-      { date: '2025-12-01', sets: 3, reps: 10, weight: 135, notes: 'Felt strong, good form' },
-      { date: '2025-12-04', sets: 4, reps: 8, weight: 140, notes: 'Slight shoulder discomfort' },
-      { date: '2025-12-04', sets: 4, reps: 8, weight: 140, notes: 'Slight shoulder discomfort' },
-      { date: '2025-12-04', sets: 4, reps: 8, weight: 140, notes: 'Slight shoulder discomfort' },
-      { date: '2025-12-04', sets: 4, reps: 8, weight: 140, notes: 'Slight shoulder discomfort' },
-      { date: '2025-12-04', sets: 4, reps: 8, weight: 140, notes: 'Slight shoulder discomfort' }
+      {
+        date: '2025-12-01',
+        sets: 3,
+        reps: 10,
+        weight: 135,
+        notes: 'Felt strong, good form'
+      },
+      {
+        date: '2025-12-04',
+        sets: 4,
+        reps: 8,
+        weight: 140,
+        notes: 'Slight shoulder discomfort'
+      },
+      {
+        date: '2025-12-04',
+        sets: 4,
+        reps: 8,
+        weight: 140,
+        notes: 'Slight shoulder discomfort'
+      },
+      {
+        date: '2025-12-04',
+        sets: 4,
+        reps: 8,
+        weight: 140,
+        notes: 'Slight shoulder discomfort'
+      },
+      {
+        date: '2025-12-04',
+        sets: 4,
+        reps: 8,
+        weight: 140,
+        notes: 'Slight shoulder discomfort'
+      },
+      {
+        date: '2025-12-04',
+        sets: 4,
+        reps: 8,
+        weight: 140,
+        notes: 'Slight shoulder discomfort'
+      }
     ]
   },
-  { id: 2, name: 'Arm Curls', photo: '/image.png', logs: [{ date: '2025-12-02', sets: 3, reps: 12, weight: 25, notes: 'Could increase weight next time' }] },
-  { id: 3, name: 'Leg Press', photo: '/image.png', logs: [{ date: '2025-12-03', sets: 4, reps: 10, weight: 200, notes: 'Good depth, stable' }] }
+  {
+    id: 2,
+    name: 'Arm Curls',
+    photo: '/image.png',
+    logs: [
+      {
+        date: '2025-12-02',
+        sets: 3,
+        reps: 12,
+        weight: 25,
+        notes: 'Could increase weight next time'
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Leg Press',
+    photo: '/image.png',
+    logs: [
+      {
+        date: '2025-12-03',
+        sets: 4,
+        reps: 10,
+        weight: 200,
+        notes: 'Good depth, stable'
+      }
+    ]
+  }
 ]
 
 const ExerciseView = () => {
   const { id } = useParams()
   const exerciseId = parseInt(id)
   const exercise = MOCK_EXERCISES.find((ex) => ex.id === exerciseId)
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [id])
 
   if (!exercise) return <div className='exercise-view'>Exercise not found</div>
 
@@ -77,9 +145,8 @@ const ExerciseView = () => {
                 {logsByDate[date].map((log, idx) => (
                   <div key={idx} className='exercise-view__log'>
                     <p className='exercise-view__log-info'>
-                      <strong>Sets:</strong> {log.sets} |{' '}
-                      <strong>Reps:</strong> {log.reps} |{' '}
-                      <strong>Weight:</strong> {log.weight} lbs
+                      <strong>Sets:</strong> {log.sets} | <strong>Reps:</strong>{' '}
+                      {log.reps} | <strong>Weight:</strong> {log.weight} lbs
                     </p>
                     {log.notes && (
                       <p className='exercise-view__log-notes'>

@@ -32,6 +32,11 @@ body {
   min-height: 100vh;
 }
 
+html, body {
+  touch-action: pan-x pan-y; /* prevents pinch-zoom but still allows scrolling */
+  overscroll-behavior: contain;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;

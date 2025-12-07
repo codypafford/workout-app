@@ -37,8 +37,8 @@ const WorkoutList = ({ items, groupName }) => {
       <div className={`${ROOT_CN}__body`}>
         <div className={`${ROOT_CN}__meta`}>
           <button onClick={() => setModalOpen(true)}>+ Add Workout</button>
-          <button>Archive</button>
-          <button>Delete</button>
+          {/* <button>Archive</button> */}
+          <button>Delete Group</button>
         </div>
 
         {items.map((item) => {
