@@ -4,7 +4,7 @@
   border-radius: 8px;
   overflow: hidden;
   margin-top: 16px;
-  font-size: 14px;
+  font-size: 16px; /* larger base font for mobile */
 }
 
 /* Header row */
@@ -18,12 +18,6 @@
   user-select: none;
 }
 
-/* Arrow column */
-.workout-list__col--arrow {
-  text-align: right;
-  font-size: 16px;
-}
-
 /* Body rows */
 .workout-list__body {
   display: flex;
@@ -34,6 +28,7 @@
   display: flex;
   padding: 12px 16px;
   border-top: 1px solid #eee;
+  flex-wrap: wrap; /* allow wrapping on small screens */
 }
 
 .workout-list__row:hover {
@@ -43,21 +38,81 @@
 /* Columns */
 .workout-list__col {
   flex: 1;
+  min-width: 80px; /* prevent collapsing on mobile */
 }
 
-.workout-list__col--exercises {
-  text-align: right;
+.workout-list__col--thumb {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: 0.5rem;
 }
 
-/* === Thumbnail / Image Upload Styles === */
+/* Thumbnails */
+.workout-list__thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
 
+/* Add button */
+.workout-list__add-thumb-btn {
+  color: black;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #aaa;
+  background: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Meta buttons */
+.workout-list__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 16px;
+  padding: 0.5rem 0.5rem;
+}
+
+.workout-list__meta button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.workout-list__meta button:hover {
+  color: black;
+}
+
+.workout-list__view-link {
+  color: white;
+  font-size: 16px;
+}
+
+.workout-list__view-link:hover {
+  color: black;
+}
+
+/* Image modal */
 .workout-list__image-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,80 +127,47 @@
   box-shadow: 0 0 10px #000;
 }
 
-.workout-list__col--thumb {
-  width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.workout-list__thumb {
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.workout-list__add-thumb-btn {
-  color: black;
-  width: 28px;
-  height: 28px;
-  border: 1px solid #aaa;
-  background: white;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.workout-list__meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  font-size: small;
-  text-align: right;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-.workout-list__meta button {
-  background: none;
-  border: none;
-  padding: 1rem;
-  margin: 0;
-  font-size: inherit;
-  cursor: pointer;
-}
-
-.workout-list__meta button:hover {
-  color: black;
-}
-
-.workout-list__view-link {
-  color: white;
-}
-
-.workout-list__view-link:hover {
-  color: black;
-}
-
+/* Inputs & textareas */
 .workout-list__inputs input,
 .workout-list__textarea {
-  margin-bottom: 0.3rem;
-  background-color: #ffffff; /* white background */
-  color: #000000; /* black text */
-  border: 1px solid #ccc; /* light gray border */
+  margin-bottom: 0.5rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 14px;
+  padding: 10px; /* larger padding for touch */
+  font-size: 16px; /* prevent zoom on mobile */
+  box-sizing: border-box;
 }
 
 .workout-list__inputs input:focus,
 .workout-list__textarea:focus {
   outline: none;
-  border-color: #007bff; /* blue border on focus */
+  border-color: #007bff;
   box-shadow: 0 0 2px rgba(0, 123, 255, 0.5);
+}
+
+/* Make the component responsive */
+@media (max-width: 480px) {
+  .workout-list__row {
+    display: flex;
+    align-items: center; /* vertically center content */
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    gap: 8px; /* spacing between columns */
+    flex-wrap: nowrap; /* keep items on one line */
+  }
+
+  /* Keep thumbnail aligned right */
+  .workout-list__col--thumb {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto; /* push it to the far right */
+  }
+
+  .workout-list__meta {
+    justify-content: space-evenly;
+  }
 }
