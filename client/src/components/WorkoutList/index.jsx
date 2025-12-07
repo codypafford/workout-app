@@ -37,8 +37,6 @@ const WorkoutList = ({ items, groupName }) => {
       <div className={`${ROOT_CN}__body`}>
         <div className={`${ROOT_CN}__meta`}>
           <button onClick={() => setModalOpen(true)}>+ Add Workout</button>
-          {/* <button>Archive</button> */}
-          <button>Delete Group</button>
         </div>
 
         {items.map((item) => {
@@ -52,14 +50,27 @@ const WorkoutList = ({ items, groupName }) => {
               />
 
               {/* Main Row */}
-              <div
-                className={`${ROOT_CN}__row`}
-                onClick={() => toggleItem(item.id)}
-              >
+              <div className={`${ROOT_CN}__row`}>
                 <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
-                  {item.name}
+                  <span
+                    className={`${ROOT_CN}__expand-name`}
+                    onClick={() => toggleItem(item.id)}
+                  >
+                    {item.name}&nbsp;
+                    <span className={`${ROOT_CN}__arrow`}>
+                      {isExpanded ? '▲' : '▼'}
+                    </span>
+                  </span>
                 </div>
 
+                <div className={`${ROOT_CN}__col ${ROOT_CN}__col--link`}>
+                  <Link
+                    to={`/exercise/${item.id}`}
+                    className={`${ROOT_CN}__view-link`}
+                  >
+                    View All Progress
+                  </Link>
+                </div>
                 <div className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}>
                   {item.image ? (
                     <img
@@ -157,14 +168,7 @@ const WorkoutList = ({ items, groupName }) => {
                   </div>
 
                   <div className={`${ROOT_CN}__meta`}>
-                    <Link
-                      to={`/exercise/${item.id}`}
-                      className='workout-list__view-link'
-                    >
-                      View All Progress
-                    </Link>
                     <button>Save Today's Workout</button>
-                    <button>Delete</button>
                   </div>
                 </div>
               )}

@@ -10,6 +10,7 @@
 /* Header row */
 .workout-list__header {
   display: flex;
+  justify-content: space-evenly;
   background: white;
   color: black;
   padding: 12px 16px;
@@ -51,8 +52,8 @@
 
 /* Thumbnails */
 .workout-list__thumb {
-  width: 32px;
-  height: 32px;
+  width: 40px; /* increased from 32px */
+  height: 40px; /* increased from 32px */
   object-fit: cover;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -96,13 +97,32 @@
   color: black;
 }
 
+/* View All Progress link */
 .workout-list__view-link {
-  color: white;
+  color: #ffd700; /* gold for distinct color */
   font-size: 16px;
+  text-decoration: underline;
 }
 
 .workout-list__view-link:hover {
-  color: black;
+  color: #ffa500; /* darker gold on hover */
+}
+
+/* Expandable group name */
+.workout-list__expand-name {
+  font-weight: 600;
+  cursor: pointer;
+  color: white; /* distinct from link */
+}
+
+.workout-list__expand-name:hover {
+  text-decoration: underline;
+}
+
+/* Arrow next to expandable name */
+.workout-list__arrow {
+  font-size: 0.8em;
+  margin-left: 4px;
 }
 
 /* Image modal */
@@ -160,11 +180,11 @@
 
   /* Keep thumbnail aligned right */
   .workout-list__col--thumb {
-    width: 40px;
+    width: 44px; /* slightly bigger than before to fit larger thumb */
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    margin-left: auto; /* push it to the far right */
+    margin-left: 0.5rem;
   }
 
   .workout-list__meta {
