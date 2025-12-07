@@ -1,0 +1,77 @@
+/* src/views/Logs/style.css */
+
+.logs-by-date {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 16px;
+  background: #f4f4f4;
+  border-radius: 8px;
+  color: #333;
+  font-family: sans-serif;
+}
+
+.logs-by-date__breadcrumb {
+  margin-bottom: 12px;
+}
+
+.logs-by-date__breadcrumb-link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.logs-by-date__breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.logs-by-date__title {
+  margin-bottom: 16px;
+}
+
+.logs-by-date__group {
+  margin-bottom: 20px;
+}
+
+.logs-by-date__group-title {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.logs-by-date__no-workouts {
+  font-style: italic;
+  color: #666;
+}
+
+.logs-by-date__workouts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.logs-by-date__workout {
+  padding: 6px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.logs-by-date__workout:last-child {
+  border-bottom: none;
+}
+
+.logs-by-date__workout-name {
+  font-weight: 600;
+}
+
+.logs-by-date__workout-info {
+  color: #555;
+}
+
+.logs-by-date__workout-notes {
+  margin: 4px 0 0 0;
+  font-style: italic;
+  color: #444;
+}
+
+.logs-by-date__empty {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+}
