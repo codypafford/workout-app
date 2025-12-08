@@ -81,7 +81,7 @@ const FormData = ({ isExpanded, className, item }) => {
         </div>
 
         <div className={`${className}__meta`}>
-          <button>Save Today's Workout</button>
+          <button className={`${className}__save`}>Save Log</button>
         </div>
       </div>
     )

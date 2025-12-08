@@ -63,3 +63,9 @@
     padding-right: 36px;
   }
 }
+
+/* Save btn */
+button.workout-list__save {
+    color: #ffd900 !important; 
+    border: 2px solid #ffd900 !important;
+}
