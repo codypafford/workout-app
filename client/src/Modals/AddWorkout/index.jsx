@@ -1,66 +1,60 @@
 import { useState, useMemo, useEffect } from 'react';
+import { fetchExercises } from '../../proxies';
 import '../style.css';
 
-const MOCK_SAVED_WORKOUTS = [
-  { id: 1, name: 'Chest Press' },
-  { id: 2, name: 'Arm Curls' },
-  { id: 3, name: 'Leg Press' },
-  { id: 4, name: 'Squats' },
-];
-
 const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
+  const [exercises, setExercises] = useState([]);
   const [selectedWorkoutId, setSelectedWorkoutId] = useState('');
   const [newWorkoutName, setNewWorkoutName] = useState('');
 
   // Reset state when modal opens
   useEffect(() => {
+    console.log('on mount!!')
     if (show) {
       setSelectedWorkoutId('');
       setNewWorkoutName('');
+      if (!isNew) loadExercises();
     }
-  }, [show]);
+  }, [show, isNew]);
 
-  // Alphabetize workouts
-  const sortedWorkouts = useMemo(() => {
-    return [...MOCK_SAVED_WORKOUTS].sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
-  }, []);
-
-  const handleAddClick = () => {
-    // New-only mode
-    if (isNew) {
-      if (!newWorkoutName.trim()) return;
-
-      onAdd({
-        id: Date.now(),
-        name: newWorkoutName.trim(),
-      });
-
-      onClose();
-      return;
-    }
-
-    // Mixed mode
-    if (selectedWorkoutId === 'new' && newWorkoutName.trim()) {
-      onAdd({
-        id: Date.now(),
-        name: newWorkoutName.trim(),
-      });
-      onClose();
-      return;
-    }
-
-    const selectedWorkout = MOCK_SAVED_WORKOUTS.find(
-      (w) => w.id === parseInt(selectedWorkoutId, 10)
-    );
-
-    if (selectedWorkout) {
-      onAdd(selectedWorkout);
-      onClose();
+  // Fetch exercises from backend
+  const loadExercises = async () => {
+    try {
+      const data = await fetchExercises();
+      setExercises(
+        data.map((ex) => ({
+          id: ex._id,
+          name: ex.name,
+          photo: ex.photo || '/image.png',
+        }))
+      );
+    } catch (err) {
+      console.error('Failed to load exercises:', err);
     }
   };
 
+  // Alphabetize exercises
+  const sortedExercises = useMemo(() => {
+    return [...exercises].sort((a, b) => a.name.localeCompare(b.name));
+  }, [exercises]);
+
+  const handleAddClick = () => {
+    let exerciseToAdd;
+
+    if (isNew || selectedWorkoutId === 'new' || selectedWorkoutId === '') {
+      if (!newWorkoutName.trim()) return;
+      exerciseToAdd = { id: '', name: newWorkoutName.trim(), photo: '', isNew: true };
+    } else {
+      exerciseToAdd = sortedExercises.find(ex => ex.id === selectedWorkoutId);
+      if (exerciseToAdd) exerciseToAdd.isNew = false;
+    }
+
+    if (exerciseToAdd) {
+      onAdd(exerciseToAdd);
+      onClose();
+    }
+  };
+  console.log('is modal open: ', show)
   if (!show) return null;
 
   return (
@@ -68,11 +62,10 @@ const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
       <div className="modal-content">
         <h2>Add Exercise</h2>
 
-        {/* ✅ New-only mode */}
         {isNew ? (
           <input
             type="text"
-            placeholder="Workout Name"
+            placeholder="Exercise Name"
             value={newWorkoutName}
             onChange={(e) => setNewWorkoutName(e.target.value)}
             style={{ marginTop: '12px', width: '100%' }}
@@ -80,28 +73,28 @@ const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
           />
         ) : (
           <>
-            <label htmlFor="workout-select">
-              Select a workout or add new:
+            <label htmlFor="exercise-select">
+              Select an existing exercise or add new:
             </label>
 
             <select
-              id="workout-select"
+              id="exercise-select"
               value={selectedWorkoutId}
               onChange={(e) => setSelectedWorkoutId(e.target.value)}
             >
-              <option value="">-- Select a workout --</option>
-              {sortedWorkouts.map((w) => (
-                <option key={w.id} value={w.id}>
-                  {w.name}
+              <option value="">-- Select an exercise --</option>
+              {sortedExercises.map((ex) => (
+                <option key={ex.id} value={ex.id}>
+                  {ex.name}
                 </option>
               ))}
-              <option value="new">+ Add a new workout</option>
+              <option value="new">+ Add a new exercise</option>
             </select>
 
-            {selectedWorkoutId === 'new' && (
+            {(selectedWorkoutId === 'new') && (
               <input
                 type="text"
-                placeholder="Workout Name"
+                placeholder="Exercise Name"
                 value={newWorkoutName}
                 onChange={(e) => setNewWorkoutName(e.target.value)}
                 style={{ marginTop: '8px', width: '100%' }}
@@ -114,13 +107,10 @@ const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
           <button className="close" onClick={onClose}>Cancel</button>
 
           <button
-            className="confirm" 
+            className="confirm"
             onClick={handleAddClick}
             disabled={
-              isNew
-                ? !newWorkoutName.trim()
-                : !selectedWorkoutId ||
-                  (selectedWorkoutId === 'new' && !newWorkoutName.trim())
+              (isNew || selectedWorkoutId === 'new') && !newWorkoutName.trim()
             }
           >
             Add

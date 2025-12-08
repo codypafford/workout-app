@@ -2,9 +2,17 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import AddWorkoutModal from '../../Modals/AddWorkout'
 import FormData from './FormData'
+import { deleteWorkoutGroup, addExercise } from '../../proxies'
 import './style.css'
 
-const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
+const WorkoutList = ({
+  id,
+  items: exerciseItems,
+  groupName,
+  focusId,
+  setFocusId,
+  refresh
+}) => {
   const ROOT_CN = 'workout-list'
 
   const [expandedItemId, setExpandedItemId] = useState(null)
@@ -13,26 +21,24 @@ const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
 
   const rowRefs = useRef({})
 
-  const [exerciseItems, setExerciseItems] = useState(items) // local copy
-
   const toggleItem = (id) => {
     setExpandedItemId((prev) => (prev === id ? null : id))
   }
 
   const handleImageUpload = (e, id) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    // const file = e.target.files?.[0]
+    // if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = () => {
-      setExerciseItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, image: reader.result } : item
-        )
-      )
-    }
-    reader.readAsDataURL(file)
-    // TODO: would call async method to upload image from here
+    // const reader = new FileReader()
+    // reader.onload = () => {
+    //   setExerciseItems((prev) =>
+    //     prev.map((item) =>
+    //       item.id === id ? { ...item, image: reader.result } : item
+    //     )
+    //   )
+    // }
+    // reader.readAsDataURL(file)
+    // TODO: would call async method to upload image from here and use cloud image storage
   }
 
   useEffect(() => {
@@ -44,9 +50,18 @@ const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
     }
   }, [expandedItemId])
 
-  const deleteGroup = (e) => {
-    console.log('delete this group: ', e)
+  const deleteGroup = async (id) => {
+    await deleteWorkoutGroup(id)
+    await refresh()
     // TODO: this would not delete any data. It would just mark the group is not active so that I can keep all the logs associated with it and would hide it from UI
+  }
+
+  const onAddExercise = async (exercise) => {
+    console.log('calling')
+    console.log()
+    await addExercise({ ...exercise, groupId: id })
+    console.log('added...')
+    await refresh()
   }
 
   if (focusId && focusId !== id) {
@@ -54,22 +69,27 @@ const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
   }
 
   const inStartMode = focusId === id
-
+  console.log('re-rendering', exerciseItems)
+  console.log('modal open: ', modalOpen)
   return (
     <div className={ROOT_CN}>
       {/* Group Header */}
       <div className={`${ROOT_CN}__header`}>
-        <div onClick={() => {
-          if (inStartMode) {
-            setFocusId(null)
-          } else {
-            setFocusId(id)
-          }
-        }}>{inStartMode ? 'Stop' : 'Start'}</div>
+        <div
+          onClick={() => {
+            if (inStartMode) {
+              setFocusId(null)
+            } else {
+              setFocusId(id)
+            }
+          }}
+        >
+          {inStartMode ? 'Stop' : 'Start'}
+        </div>
         <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
           {groupName}
         </div>
-        <div onClick={deleteGroup} className={`${ROOT_CN}__trash`}>
+        <div onClick={() => deleteGroup(id)} className={`${ROOT_CN}__trash`}>
           🗑️
         </div>
       </div>
@@ -78,7 +98,11 @@ const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
         <div className={`${ROOT_CN}__meta`}>
           <button onClick={() => setModalOpen(true)}>+ Add Exercise</button>
         </div>
-
+        <AddWorkoutModal
+          show={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onAdd={onAddExercise}
+        />
         {exerciseItems.map((item) => {
           const isExpanded = expandedItemId === item.id
 
@@ -88,11 +112,6 @@ const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
               className={`${ROOT_CN}__item-container`}
               ref={(el) => (rowRefs.current[item.id] = el)}
             >
-              <AddWorkoutModal
-                show={modalOpen}
-                onClose={() => setModalOpen(false)}
-              />
-
               {/* Main Row */}
               <div className={`${ROOT_CN}__row`}>
                 <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
@@ -119,7 +138,7 @@ const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
                   {item.image ? (
                     <img
                       src={item.image}
-                      alt='thumb'
+                      alt='gym_photo'
                       className={`${ROOT_CN}__thumb`}
                       onClick={(e) => {
                         e.stopPropagation() // prevent expanding the row
@@ -155,6 +174,9 @@ const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
                 isExpanded={isExpanded}
                 className={ROOT_CN}
                 item={item}
+                groupId={id}
+                groupName={groupName}
+                refresh={refresh}
               />
 
               {/* Image Modal */}

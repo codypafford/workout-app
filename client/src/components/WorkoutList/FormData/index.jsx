@@ -1,6 +1,54 @@
-import './style.css';
+import { useState } from 'react'
+import { addLog } from '../../../proxies' // create this function to call /api/logs
+import './style.css'
 
-const FormData = ({ isExpanded, className, item }) => {
+const FormData = ({
+  isExpanded,
+  className,
+  item,
+  groupId,
+  groupName,
+  refresh
+}) => {
+  const [sets, setSets] = useState('')
+  const [reps, setReps] = useState('')
+  const [weight, setWeight] = useState('')
+  const [notes, setNotes] = useState('')
+
+  const handleSaveLog = async () => {
+    console.log(item)
+    if (!sets || !reps || !weight) {
+      alert('Please select sets, reps, and weight')
+      return
+    }
+
+    try {
+      const logPayload = {
+        exerciseId: item.id,
+        exerciseNameSnapshot: item.name,
+        groupId: groupId,
+        groupNameSnapshot: groupName,
+        sets: parseInt(sets),
+        reps: parseInt(reps),
+        weight: parseFloat(weight),
+        notes: notes || ''
+      }
+
+      await addLog(logPayload)
+
+      // Optionally reset inputs after saving
+      setSets('')
+      setReps('')
+      setWeight('')
+      setNotes('')
+
+      // Optionally refresh parent data if needed
+      await refresh()
+    } catch (err) {
+      console.error('Failed to save log:', err)
+    }
+  }
+
   return (
     isExpanded && (
       <div className={`${className}__extra`}>
@@ -32,37 +80,49 @@ const FormData = ({ isExpanded, className, item }) => {
 
         <div className={`${className}__extra-today`}>
           <div className={`${className}__inputs`}>
-            <select className={`${className}__input`} defaultValue=''>
+            <select
+              className={`${className}__input`}
+              value={sets}
+              onChange={(e) => setSets(e.target.value)}
+            >
               <option value='' disabled>
                 Sets
               </option>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                <option key={n} value={n}>
-                  {n}
+              {[...Array(10)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
                 </option>
               ))}
             </select>
 
             <br />
 
-            <select className={`${className}__input`} defaultValue=''>
+            <select
+              className={`${className}__input`}
+              value={reps}
+              onChange={(e) => setReps(e.target.value)}
+            >
               <option value='' disabled>
                 Reps
               </option>
-              {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
-                <option key={n} value={n}>
-                  {n}
+              {[...Array(20)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
                 </option>
               ))}
             </select>
 
             <br />
 
-            <select className={`${className}__input`} defaultValue=''>
+            <select
+              className={`${className}__input`}
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+            >
               <option value='' disabled>
                 Weight (lbs)
               </option>
-              {Array.from({ length: 250 }, (_, i) => i * 1).map((n) => (
+              {Array.from({ length: 250 }, (_, i) => i + 1).map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
@@ -77,11 +137,15 @@ const FormData = ({ isExpanded, className, item }) => {
           <textarea
             className={`${className}__textarea`}
             placeholder='Optional notes...'
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
           />
         </div>
 
         <div className={`${className}__meta`}>
-          <button className={`${className}__save`}>Save Log</button>
+          <button className={`${className}__save`} onClick={handleSaveLog}>
+            Save Log
+          </button>
         </div>
       </div>
     )

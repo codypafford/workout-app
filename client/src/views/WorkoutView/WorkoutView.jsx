@@ -1,102 +1,36 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import WorkoutList from '../../components/WorkoutList'
 import AddWorkoutGroupModal from '../../Modals/AddWorkoutGroup'
+import { getGroups, addWorkoutGroup } from '../../proxies'
 import './style.css'
 
 const WorkoutView = () => {
   const ROOT_CN = 'workout-view'
   const [modalOpen, setModalOpen] = useState(false) // state for modal
   const [focusId, setFocusId] = useState(null);
+  const [groupData, setGroupData] = useState(null);
 
-  const lists = [
-    {
-      id: 1,
-      groupName: 'Upper Body',
-      group: [
-        {
-          id: 1,
-          name: 'Chest Press',
-          last: [
-            { sets: 3, reps: 10, weight: 135 },
-            { sets: 4, reps: 8, weight: 140 }
-          ],
-          today: [{ sets: 3, reps: 10, weight: 140 }],
-          image: '/image.png'
-        },
-        {
-          id: 2,
-          name: 'Arm Curls',
-          last: [
-            { sets: 3, reps: 12, weight: 25 },
-            { sets: 3, reps: 10, weight: 30 }
-          ],
-          today: []
-        },
-        {
-          id: 3,
-          name: 'Tricep Extensions',
-          last: [{ sets: 4, reps: 10, weight: 40 }],
-          today: []
-        }
-      ]
-    },
-    {
-      id: 2,
-      groupName: 'Leg Day',
-      group: [
-        {
-          id: 1,
-          name: 'Leg Press',
-          last: [{ sets: 4, reps: 10, weight: 200 }],
-          today: []
-        },
-        {
-          id: 2,
-          name: 'Seated Leg Curls',
-          last: [
-            { sets: 3, reps: 12, weight: 80 },
-            { sets: 4, reps: 10, weight: 85 }
-          ],
-          today: [{ sets: 3, reps: 12, weight: 80 }]
-        },
-        {
-          id: 3,
-          name: 'Calf Press',
-          last: [{ sets: 5, reps: 15, weight: 100 }],
-          today: []
-        }
-      ]
-    },
-        {
-      id: 3,
-      groupName: 'Arm Day',
-      group: [
-        {
-          id: 1,
-          name: 'Bicep Curl',
-          last: [{ sets: 4, reps: 10, weight: 200 }],
-          today: []
-        },
-        {
-          id: 2,
-          name: 'Pushups',
-          last: [
-            { sets: 3, reps: 12, weight: 80 },
-            { sets: 4, reps: 10, weight: 85 }
-          ],
-          today: [{ sets: 3, reps: 12, weight: 80 }]
-        },
-        {
-          id: 3,
-          name: 'Pullup',
-          last: [{ sets: 5, reps: 15, weight: 100 }],
-          today: []
-        }
-      ]
-    }
-  ]
+  const addWorkoutGroupSubmit = async (name) => {
+    const response = await addWorkoutGroup({name})
+    fetchGroups();
+  }
 
+  const fetchGroups = () => {
+    getGroups().then((x) => {
+      setGroupData(x)
+      console.log('setting new group data: ', x)
+    });
+  }
+
+  useEffect(() => {
+    fetchGroups()
+  }, [])
+
+  if (groupData == null) {
+    return (<div>Loading...</div>)
+  }
+  console.log('pass this downstream: ', groupData)
   return (
     <div className={`${ROOT_CN}__container`}>
       💪
@@ -110,18 +44,20 @@ const WorkoutView = () => {
       <AddWorkoutGroupModal
         show={modalOpen}
         onClose={() => setModalOpen(false)}
+        onSubmit={addWorkoutGroupSubmit}
       />
-
-      {lists.map((list) => {
+      
+      {groupData.map((group) => {
         // TODO: the compnent below should be called ExerciseRow
         return (
           <WorkoutList
             focusId={focusId}
             setFocusId={setFocusId}
-            id={list.id}
-            items={list.group}
-            key={list.id}
-            groupName={list.groupName}
+            id={group.id}
+            items={group.exercises}
+            key={group.id}
+            groupName={group.groupName}
+            refresh={fetchGroups}
           />
         )
       })}
