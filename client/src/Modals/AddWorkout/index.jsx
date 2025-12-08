@@ -111,9 +111,10 @@ const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
         )}
 
         <div className="modal-actions" style={{ marginTop: '16px' }}>
-          <button onClick={onClose}>Cancel</button>
+          <button className="close" onClick={onClose}>Cancel</button>
 
           <button
+            className="confirm" 
             onClick={handleAddClick}
             disabled={
               isNew

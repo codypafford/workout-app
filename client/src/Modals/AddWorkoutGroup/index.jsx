@@ -9,8 +9,8 @@ const AddWorkoutGroupModal = ({ show, onClose }) => {
         <h2>Add Workout Group</h2>
         <input type="text" placeholder="Group Name" />
         <div className="modal-actions">
-          <button onClick={onClose}>Cancel</button>
-          <button>Add</button>
+          <button className="close" onClick={onClose}>Cancel</button>
+          <button className="confirm">Add</button>
         </div>
       </div>
     </div>
