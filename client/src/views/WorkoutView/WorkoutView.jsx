@@ -72,9 +72,6 @@ const WorkoutView = () => {
   return (
     <div className={`${ROOT_CN}__container`}>
       💪
-      <div className='view-logs'>
-        <Link to='/logs'>View All Logs</Link>
-      </div>
       <div className={`${ROOT_CN}__header`}>
         <div className={`${ROOT_CN}__title`}>Workout Groups&nbsp;</div>
 

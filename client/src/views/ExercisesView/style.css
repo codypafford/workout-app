@@ -1,0 +1,100 @@
+.exercises-view {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  color: black;
+}
+
+/* Header */
+.exercises-view__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.exercises-view__title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.exercises-view__add-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.exercises-view__add-btn:hover {
+  background: #0056b3;
+}
+
+/* Grid */
+.exercises-view__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+/* Exercise card */
+.exercises-view__card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Image */
+.exercises-view__image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+/* Footer */
+.exercises-view__card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+}
+
+.exercises-view__name {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Delete */
+.exercises-view__delete-btn {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.exercises-view__delete-btn:hover {
+  color: red;
+}
+
+/* Empty state */
+.exercises-view__empty {
+  margin-top: 2rem;
+  text-align: center;
+  color: #666;
+}
+
+/* Mobile polish */
+@media (max-width: 480px) {
+  .exercises-view__image {
+    height: 100px;
+  }
+}
+
+

@@ -27,3 +27,13 @@
 .read-the-docs {
   color: #888;
 }
+
+nav {
+  position: fixed;
+  width: 100%;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  color: black;
+  top: 0;
+  background-color: white;
+}

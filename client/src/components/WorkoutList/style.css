@@ -1,5 +1,6 @@
 .workout-list {
   background-color: rgb(38, 118, 165);
+  color: white;
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
