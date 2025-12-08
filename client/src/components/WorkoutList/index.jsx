@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import AddWorkoutModal from '../../Modals/AddWorkout'
 import FormData from './FormData'
@@ -10,6 +10,8 @@ const WorkoutList = ({ items, groupName }) => {
   const [expandedItemId, setExpandedItemId] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [enlargedImage, setEnlargedImage] = useState(null) // new state for image modal
+
+  const rowRefs = useRef({})
 
   const toggleItem = (id) => {
     setExpandedItemId((prev) => (prev === id ? null : id))
@@ -25,6 +27,15 @@ const WorkoutList = ({ items, groupName }) => {
     }
     reader.readAsDataURL(file)
   }
+
+  useEffect(() => {
+    if (expandedItemId && rowRefs.current[expandedItemId]) {
+      rowRefs.current[expandedItemId].scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  }, [expandedItemId])
 
   return (
     <div className={ROOT_CN}>
@@ -44,7 +55,11 @@ const WorkoutList = ({ items, groupName }) => {
           const isExpanded = expandedItemId === item.id
 
           return (
-            <div key={item.id} className={`${ROOT_CN}__item-container`}>
+            <div
+              key={item.id}
+              className={`${ROOT_CN}__item-container`}
+              ref={(el) => (rowRefs.current[item.id] = el)}
+            >
               <AddWorkoutModal
                 show={modalOpen}
                 onClose={() => setModalOpen(false)}
@@ -108,7 +123,11 @@ const WorkoutList = ({ items, groupName }) => {
                 </div>
               </div>
 
-              <FormData isExpanded={isExpanded} className={ROOT_CN} item={item}/>
+              <FormData
+                isExpanded={isExpanded}
+                className={ROOT_CN}
+                item={item}
+              />
 
               {/* Image Modal */}
               {enlargedImage && (

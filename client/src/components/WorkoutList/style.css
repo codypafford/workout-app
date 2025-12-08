@@ -174,3 +174,9 @@
     justify-content: space-evenly;
   }
 }
+
+/* Scroll to */
+.workout-list__item-container {
+  scroll-margin-top: 80px;
+}
+
