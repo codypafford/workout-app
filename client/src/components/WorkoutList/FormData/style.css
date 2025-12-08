@@ -9,43 +9,28 @@
     padding-right: 1rem;
 }
 
-/* Inputs, selects & textareas */
-.workout-list__inputs input,
-.workout-list__inputs select,
-.workout-list__textarea {
-  width: 100%;
-  margin-bottom: 0.75rem;
+/* Inputs and textareas */
+.workout-list input,
+.workout-list select,
+.workout-list textarea {
   background-color: #ffffff;
   color: #000000;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 12px;                 /* comfortable touch target */
-  font-size: 16px;               /* prevents iOS zoom */
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 16px; /* prevents zoom on mobile */
+  width: 100%;
   box-sizing: border-box;
-  appearance: none;              /* normalize mobile styles */
-  -webkit-appearance: none;
+  margin-bottom: 12px;
 }
 
-/* Focus states */
-.workout-list__inputs input:focus,
-.workout-list__inputs select:focus,
-.workout-list__textarea:focus {
+/* Focus styles */
+.workout-list input:focus,
+.workout-list select:focus,
+.workout-list textarea:focus {
   outline: none;
   border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-/* Dropdown arrow styling */
-.workout-list__inputs select {
-  width: 100%;
-  margin-bottom: 0.75rem;
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 12px;
-  font-size: 16px;
-  box-sizing: border-box;
+  box-shadow: 0 0 2px rgba(0, 123, 255, 0.5);
 }
 
 /* Disabled placeholder option */
