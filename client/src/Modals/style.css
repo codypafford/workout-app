@@ -28,6 +28,7 @@
 
 /* Inputs and textareas */
 .modal-content input,
+.modal-content select,
 .modal-content textarea {
   background-color: #ffffff;
   color: #000000;
@@ -42,6 +43,7 @@
 
 /* Focus styles */
 .modal-content input:focus,
+.modal-content select:focus,
 .modal-content textarea:focus {
   outline: none;
   border-color: #007bff;
