@@ -66,7 +66,7 @@ const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
   return (
     <div className="modal-backdrop">
       <div className="modal-content">
-        <h2>Add Workout</h2>
+        <h2>Add Exercise</h2>
 
         {/* ✅ New-only mode */}
         {isNew ? (

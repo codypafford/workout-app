@@ -37,6 +37,11 @@ const WorkoutList = ({ items, groupName }) => {
     }
   }, [expandedItemId])
 
+  const deleteGroup = (e) => {
+    console.log('delete this group: ', e)
+    // TODO: this would not delete any data. It would just mark the group is not active so that I can keep all the logs associated with it and would hide it from UI
+  }
+
   return (
     <div className={ROOT_CN}>
       {/* Group Header */}
@@ -44,11 +49,12 @@ const WorkoutList = ({ items, groupName }) => {
         <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
           {groupName}
         </div>
+        <div onClick={deleteGroup} className={`${ROOT_CN}__trash`}>🗑️</div>
       </div>
 
       <div className={`${ROOT_CN}__body`}>
         <div className={`${ROOT_CN}__meta`}>
-          <button onClick={() => setModalOpen(true)}>+ Add Workout</button>
+          <button onClick={() => setModalOpen(true)}>+ Add Exercise</button>
         </div>
 
         {items.map((item) => {

@@ -16,8 +16,6 @@
   color: black;
   padding: 12px 16px;
   font-weight: 600;
-  cursor: pointer;
-  user-select: none;
 }
 
 /* Body rows */
@@ -100,6 +98,19 @@
   color: black;
 }
 
+/* Trash Icon */
+.workout-list__trash {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  color: white;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
 /* View All Progress link */
 .workout-list__view-link {
   color: #ffd700; /* gold for distinct color */
@@ -179,4 +190,3 @@
 .workout-list__item-container {
   scroll-margin-top: 80px;
 }
-
