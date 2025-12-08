@@ -10,16 +10,18 @@ const App = () => {
   return (
     <div>
       <nav>
-        <Link to="/">Home</Link> | <Link to="/logs">Logs</Link> | <Link to="/exercises">Exercises</Link>
+        <Link to='/'>Home</Link> | <Link to='/logs'>Logs</Link> |{' '}
+        <Link to='/exercises'>Exercises</Link>
       </nav>
-
-      <Routes>
-        <Route path='/' element={<WorkoutView />} />
-        <Route path='/exercise/:id' element={<ExerciseView />} />
-        <Route path='/exercises' element={<ExercisesView />} />
-        <Route path='/logs' element={<LogsOverview />} />
-        <Route path='/logs/:date' element={<LogsByDate />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path='/' element={<WorkoutView />} />
+          <Route path='/exercise/:id' element={<ExerciseView />} />
+          <Route path='/exercises' element={<ExercisesView />} />
+          <Route path='/logs' element={<LogsOverview />} />
+          <Route path='/logs/:date' element={<LogsByDate />} />
+        </Routes>
+      </main>
     </div>
   )
 }
