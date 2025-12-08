@@ -13,19 +13,26 @@ const WorkoutList = ({ items, groupName }) => {
 
   const rowRefs = useRef({})
 
+  const [exerciseItems, setExerciseItems] = useState(items) // local copy
+
   const toggleItem = (id) => {
     setExpandedItemId((prev) => (prev === id ? null : id))
   }
 
-  const handleImageUpload = (e, item) => {
+  const handleImageUpload = (e, id) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     const reader = new FileReader()
     reader.onload = () => {
-      item.image = reader.result
+      setExerciseItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, image: reader.result } : item
+        )
+      )
     }
     reader.readAsDataURL(file)
+    // TODO: would call async method to upload image from here
   }
 
   useEffect(() => {
@@ -49,7 +56,9 @@ const WorkoutList = ({ items, groupName }) => {
         <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
           {groupName}
         </div>
-        <div onClick={deleteGroup} className={`${ROOT_CN}__trash`}>🗑️</div>
+        <div onClick={deleteGroup} className={`${ROOT_CN}__trash`}>
+          🗑️
+        </div>
       </div>
 
       <div className={`${ROOT_CN}__body`}>
@@ -57,7 +66,7 @@ const WorkoutList = ({ items, groupName }) => {
           <button onClick={() => setModalOpen(true)}>+ Add Exercise</button>
         </div>
 
-        {items.map((item) => {
+        {exerciseItems.map((item) => {
           const isExpanded = expandedItemId === item.id
 
           return (
@@ -122,7 +131,7 @@ const WorkoutList = ({ items, groupName }) => {
                         type='file'
                         accept='image/*'
                         style={{ display: 'none' }}
-                        onChange={(e) => handleImageUpload(e, item)}
+                        onChange={(e) => handleImageUpload(e, item.id)}
                       />
                     </>
                   )}

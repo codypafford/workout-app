@@ -85,6 +85,7 @@ const WorkoutView = () => {
       />
 
       {lists.map((list) => {
+        // TODO: the compnent below should be called ExerciseRow
         return (
           <WorkoutList
             items={list.group}
