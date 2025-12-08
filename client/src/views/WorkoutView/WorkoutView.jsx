@@ -7,6 +7,7 @@ import './style.css'
 const WorkoutView = () => {
   const ROOT_CN = 'workout-view'
   const [modalOpen, setModalOpen] = useState(false) // state for modal
+  const [focusId, setFocusId] = useState(null);
 
   const lists = [
     {
@@ -66,6 +67,33 @@ const WorkoutView = () => {
           today: []
         }
       ]
+    },
+        {
+      id: 3,
+      groupName: 'Arm Day',
+      group: [
+        {
+          id: 1,
+          name: 'Bicep Curl',
+          last: [{ sets: 4, reps: 10, weight: 200 }],
+          today: []
+        },
+        {
+          id: 2,
+          name: 'Pushups',
+          last: [
+            { sets: 3, reps: 12, weight: 80 },
+            { sets: 4, reps: 10, weight: 85 }
+          ],
+          today: [{ sets: 3, reps: 12, weight: 80 }]
+        },
+        {
+          id: 3,
+          name: 'Pullup',
+          last: [{ sets: 5, reps: 15, weight: 100 }],
+          today: []
+        }
+      ]
     }
   ]
 
@@ -88,6 +116,9 @@ const WorkoutView = () => {
         // TODO: the compnent below should be called ExerciseRow
         return (
           <WorkoutList
+            focusId={focusId}
+            setFocusId={setFocusId}
+            id={list.id}
             items={list.group}
             key={list.id}
             groupName={list.groupName}

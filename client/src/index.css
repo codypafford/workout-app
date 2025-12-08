@@ -27,7 +27,6 @@ body {
   background-color: #f4f4f4;
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -51,7 +50,7 @@ button {
   font-weight: 500;
   font-family: inherit;
   color: white;
-  background-color: #1a1a1a;
+  background-color: rgb(38, 118, 165);
   cursor: pointer;
   transition: border-color 0.25s;
 }

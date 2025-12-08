@@ -4,7 +4,7 @@ import AddWorkoutModal from '../../Modals/AddWorkout'
 import FormData from './FormData'
 import './style.css'
 
-const WorkoutList = ({ items, groupName }) => {
+const WorkoutList = ({ id, items, groupName, focusId, setFocusId }) => {
   const ROOT_CN = 'workout-list'
 
   const [expandedItemId, setExpandedItemId] = useState(null)
@@ -49,10 +49,23 @@ const WorkoutList = ({ items, groupName }) => {
     // TODO: this would not delete any data. It would just mark the group is not active so that I can keep all the logs associated with it and would hide it from UI
   }
 
+  if (focusId && focusId !== id) {
+    return <></>
+  }
+
+  const inStartMode = focusId === id
+
   return (
     <div className={ROOT_CN}>
       {/* Group Header */}
       <div className={`${ROOT_CN}__header`}>
+        <div onClick={() => {
+          if (inStartMode) {
+            setFocusId(null)
+          } else {
+            setFocusId(id)
+          }
+        }}>{inStartMode ? 'Stop' : 'Start'}</div>
         <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
           {groupName}
         </div>
