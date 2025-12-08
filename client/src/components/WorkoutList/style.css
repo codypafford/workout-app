@@ -79,6 +79,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  color: white;
   align-items: center;
   gap: 0.5rem;
   font-size: 16px;
@@ -145,26 +146,6 @@
   max-height: 90%;
   border-radius: 8px;
   box-shadow: 0 0 10px #000;
-}
-
-/* Inputs & textareas */
-.workout-list__inputs input,
-.workout-list__textarea {
-  margin-bottom: 0.5rem;
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px; /* larger padding for touch */
-  font-size: 16px; /* prevent zoom on mobile */
-  box-sizing: border-box;
-}
-
-.workout-list__inputs input:focus,
-.workout-list__textarea:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 2px rgba(0, 123, 255, 0.5);
 }
 
 /* Make the component responsive */

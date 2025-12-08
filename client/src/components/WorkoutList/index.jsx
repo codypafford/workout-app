@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import AddWorkoutModal from '../../Modals/AddWorkout'
+import FormData from './FormData'
 import './style.css'
 
 const WorkoutList = ({ items, groupName }) => {
@@ -107,71 +108,7 @@ const WorkoutList = ({ items, groupName }) => {
                 </div>
               </div>
 
-              {/* Expanded Section */}
-              {isExpanded && (
-                <div className={`${ROOT_CN}__extra`}>
-                  <div className={`${ROOT_CN}__extra-last`}>
-                    <label className={`${ROOT_CN}__label`}>Last Time:</label>
-                    <div className={`${ROOT_CN}__value`}>
-                      {item.last && item.last.length > 0
-                        ? item.last.map((entry, index) => (
-                            <div key={index}>
-                              {entry.sets} x {entry.reps} @ {entry.weight} lbs
-                            </div>
-                          ))
-                        : 'No history yet'}
-                    </div>
-                  </div>
-
-                  <div className={`${ROOT_CN}__extra-last`}>
-                    <label className={`${ROOT_CN}__label`}>Today:</label>
-                    <div className={`${ROOT_CN}__value`}>
-                      {item.today && item.today.length > 0
-                        ? item.today.map((entry, index) => (
-                            <div key={index}>
-                              {entry.sets} x {entry.reps} @ {entry.weight} lbs
-                            </div>
-                          ))
-                        : 'No history yet'}
-                    </div>
-                  </div>
-
-                  <div className={`${ROOT_CN}__extra-today`}>
-                    <div className={`${ROOT_CN}__inputs`}>
-                      <input
-                        type='number'
-                        placeholder='Sets'
-                        className={`${ROOT_CN}__input`}
-                      />
-                      <br />
-                      <input
-                        type='number'
-                        placeholder='Reps'
-                        className={`${ROOT_CN}__input`}
-                      />
-                      <br />
-                      <input
-                        type='number'
-                        placeholder='Weight (lbs)'
-                        className={`${ROOT_CN}__input`}
-                      />
-                    </div>
-                  </div>
-
-                  <div className={`${ROOT_CN}__extra-notes`}>
-                    <label className={`${ROOT_CN}__label`}>Notes:</label>
-                    <br />
-                    <textarea
-                      className={`${ROOT_CN}__textarea`}
-                      placeholder='Optional notes...'
-                    />
-                  </div>
-
-                  <div className={`${ROOT_CN}__meta`}>
-                    <button>Save Today's Workout</button>
-                  </div>
-                </div>
-              )}
+              <FormData isExpanded={isExpanded} className={ROOT_CN} item={item}/>
 
               {/* Image Modal */}
               {enlargedImage && (
