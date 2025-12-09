@@ -12,6 +12,12 @@ const app = express()
 // Middleware
 app.use(express.json())
 
+app.use(cors({
+  origin: 'https://workout-app-5wdt.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}))
+
+
 // Connect to Mongo
 connectDB()
 
