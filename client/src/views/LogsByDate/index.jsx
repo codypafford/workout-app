@@ -9,23 +9,36 @@ const LogsByDate = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    const loadLogs = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        const data = await fetchLogsByDate(date)
-        setLog(data[0] || null) // API returns array with one object
-      } catch (err) {
-        console.error('Failed to fetch logs:', err)
-        setError('Failed to fetch logs')
-      } finally {
-        setLoading(false)
-      }
+  const loadLogs = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const data = await fetchLogsByDate(date)
+      console.log('setting log data: ', data)
+      setLog(data[0] || null)
+    } catch (err) {
+      console.error('Failed to fetch logs:', err)
+      setError('Failed to fetch logs')
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     loadLogs()
   }, [date])
+
+  const handleDelete = async (logId) => {
+    if (!window.confirm('Are you sure you want to delete this workout?')) return
+    try {
+      await deleteLog(logId)
+      // Refresh the logs after deletion
+      await loadLogs()
+    } catch (err) {
+      console.error(err)
+      alert('Failed to delete workout')
+    }
+  }
 
   if (loading) return <p className="logs-by-date__loading">Loading...</p>
   if (error) return <p className="logs-by-date__error">{error}</p>
@@ -56,15 +69,23 @@ const LogsByDate = () => {
         log.groups.map((group) => (
           <div key={group.name} className="logs-by-date__group">
             <h3 className="logs-by-date__group-title">{group.name}</h3>
+            <hr />
             {group.workouts.length === 0 ? (
               <p className="logs-by-date__no-workouts">No workouts logged</p>
             ) : (
               <ul className="logs-by-date__workouts-list">
-                {group.workouts.map((w, idx) => (
-                  <li key={idx} className="logs-by-date__workout">
-                    <span className="logs-by-date__workout-name">{w.name}</span> —{' '}
+                {group.workouts.map((w) => (
+                  <li key={w.logId} className="logs-by-date__workout">
+                    <span className="logs-by-date__workout-name">{w.name}</span><br/>
                     <span className="logs-by-date__workout-info">{w.sets} sets x {w.reps} reps @ {w.weight} lbs</span>
                     {w.notes && <p className="logs-by-date__workout-notes">Notes: {w.notes}</p>}
+                    &nbsp;&nbsp;&nbsp;
+                    <span
+                      className="logs-by-date__delete-btn"
+                      onClick={() => handleDelete(w.logId)}
+                    >
+                      🗑️
+                    </span>
                   </li>
                 ))}
               </ul>

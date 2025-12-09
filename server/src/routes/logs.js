@@ -97,6 +97,7 @@ router.get('/:date', async (req, res) => {
       if (!overviewMap[groupName]) overviewMap[groupName] = [];
 
       overviewMap[groupName].push({
+        logId: log._id,
         name: log.exerciseNameSnapshot || 'Unknown Exercise',
         sets: log.sets,
         reps: log.reps,

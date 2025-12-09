@@ -57,6 +57,15 @@ export async function addExercise(exercise) {
   return res.json();
 }
 
+export async function deleteExercise(id) {
+  const res = await fetch(`/api/exercises/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete exercise');
+  return res.json();
+}
+
+
 //-----------------------------
 // LOGS
 export async function addLog(logData) {

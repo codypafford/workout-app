@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import AddWorkoutModal from '../../Modals/AddWorkout';
-import { addExercise, fetchExercises } from '../../proxies';
+import { addExercise, fetchExercises, deleteExercise } from '../../proxies';
 import './style.css';
 
 const ROOT_CN = 'exercises-view';
@@ -31,7 +31,6 @@ export default function ExercisesView() {
   const handleAddExercise = async (exercise) => {
     try {
       const newExercise = await addExercise(exercise); // POST via proxy
-      // TODO: refetch instead of doing ths in memory
       setExercises(prev => [
         ...prev,
         {
@@ -46,8 +45,18 @@ export default function ExercisesView() {
     }
   };
 
-  const deleteExerciseLocal = (id) => {
-    setExercises(prev => prev.filter(e => e.id !== id));
+  // Handle deleting exercise with confirmation
+  const handleDeleteExercise = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this exercise?')) return;
+
+    try {
+      await deleteExercise(id); // call backend proxy
+      // Remove locally
+      setExercises(prev => prev.filter(e => e.id !== id));
+    } catch (err) {
+      console.error('Failed to delete exercise:', err);
+      alert('Failed to delete exercise');
+    }
   };
 
   return (
@@ -78,7 +87,7 @@ export default function ExercisesView() {
 
               <button
                 className={`${ROOT_CN}__delete-btn`}
-                onClick={() => deleteExerciseLocal(exercise.id)}
+                onClick={() => handleDeleteExercise(exercise.id)}
               >
                 ✕
               </button>
