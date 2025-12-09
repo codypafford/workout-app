@@ -8,19 +8,22 @@ import './style.css'
 const WorkoutView = () => {
   const ROOT_CN = 'workout-view'
   const [modalOpen, setModalOpen] = useState(false) // state for modal
-  const [focusId, setFocusId] = useState(null);
-  const [groupData, setGroupData] = useState(null);
+  const [focusId, setFocusId] = useState(null)
+  const [groupData, setGroupData] = useState(null)
 
   const addWorkoutGroupSubmit = async (name) => {
-    const response = await addWorkoutGroup({name})
-    fetchGroups();
+    await addWorkoutGroup({ name })
+    fetchGroups()
   }
 
   const fetchGroups = () => {
     getGroups().then((x) => {
-      setGroupData(x)
-      console.log('setting new group data: ', x)
-    });
+      const sortedGroups = x.sort((a, b) =>
+        a.groupName.localeCompare(b.groupName)
+      )
+      setGroupData(sortedGroups)
+      console.log('setting new group data: ', sortedGroups)
+    })
   }
 
   useEffect(() => {
@@ -28,7 +31,7 @@ const WorkoutView = () => {
   }, [])
 
   if (groupData == null) {
-    return (<div>Loading...</div>)
+    return <div>Loading...</div>
   }
   console.log('pass this downstream: ', groupData)
   return (
@@ -46,7 +49,6 @@ const WorkoutView = () => {
         onClose={() => setModalOpen(false)}
         onSubmit={addWorkoutGroupSubmit}
       />
-      
       {groupData.map((group) => {
         return (
           <ExerciseRow

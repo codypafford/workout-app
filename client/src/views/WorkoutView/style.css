@@ -2,7 +2,7 @@
   max-width: 40rem;
   background: #f4f4f4;
   margin: 0 auto;       /* keeps horizontal centering */
-  padding: 16px;
+  /* padding: 16px; */
   padding-bottom: 2rem;
   /* optional: ensure it starts at top */
   margin-top: 0;

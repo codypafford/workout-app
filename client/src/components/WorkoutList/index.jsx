@@ -142,7 +142,7 @@ const WorkoutList = ({
                     View All Progress
                   </Link>
                 </div>
-                <div className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}>
+                {/* <div className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}>
                   {item.image ? (
                     <img
                       src={item.image}
@@ -175,7 +175,7 @@ const WorkoutList = ({
                       />
                     </>
                   )}
-                </div>
+                </div> */}
               </div>
 
               <FormData
