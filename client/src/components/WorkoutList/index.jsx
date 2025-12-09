@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import AddWorkoutModal from '../../Modals/AddWorkout'
+import ConfirmModal from '../../Modals/Confirmation'
 import FormData from './FormData'
 import { deleteWorkoutGroup, addExercise } from '../../proxies'
 import './style.css'
@@ -16,7 +17,8 @@ const WorkoutList = ({
   const ROOT_CN = 'workout-list'
 
   const [expandedItemId, setExpandedItemId] = useState(null)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [exerciseModalOpen, setExerciseModalOpen] = useState(false)
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false)
   const [enlargedImage, setEnlargedImage] = useState(null) // new state for image modal
 
   const rowRefs = useRef({})
@@ -50,7 +52,7 @@ const WorkoutList = ({
     }
   }, [expandedItemId])
 
-  const deleteGroup = async (id) => {
+  const deleteGroup = async () => {
     await deleteWorkoutGroup(id)
     await refresh()
     // TODO: this would not delete any data. It would just mark the group is not active so that I can keep all the logs associated with it and would hide it from UI
@@ -69,8 +71,7 @@ const WorkoutList = ({
   }
 
   const inStartMode = focusId === id
-  console.log('re-rendering', exerciseItems)
-  console.log('modal open: ', modalOpen)
+
   return (
     <div className={ROOT_CN}>
       {/* Group Header */}
@@ -89,19 +90,26 @@ const WorkoutList = ({
         <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
           {groupName}
         </div>
-        <div onClick={() => deleteGroup(id)} className={`${ROOT_CN}__trash`}>
+        <div onClick={() => setConfirmModalOpen(true)} className={`${ROOT_CN}__trash`}>
           🗑️
         </div>
       </div>
 
       <div className={`${ROOT_CN}__body`}>
         <div className={`${ROOT_CN}__meta`}>
-          <button onClick={() => setModalOpen(true)}>+ Add Exercise</button>
+          <button onClick={() => setExerciseModalOpen(true)}>+ Add Exercise</button>
         </div>
         <AddWorkoutModal
-          show={modalOpen}
-          onClose={() => setModalOpen(false)}
+          show={exerciseModalOpen}
+          onClose={() => setExerciseModalOpen(false)}
           onAdd={onAddExercise}
+        />
+        <ConfirmModal
+          show={confirmModalOpen}
+          header="Delete Group?"
+          bodyText="This action cannot be undone."
+          onClose={() => setConfirmModalOpen(false)}
+          onSubmit={deleteGroup}
         />
         {exerciseItems.map((item) => {
           const isExpanded = expandedItemId === item.id

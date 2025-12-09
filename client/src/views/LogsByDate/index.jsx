@@ -1,28 +1,34 @@
-// src/views/Logs/LogsByDate.jsx
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { fetchLogsByDate, deleteLog } from '../../proxies'
 import './style.css'
-
-const MOCK_LOGS = [
-  {
-    date: '2025-12-01',
-    groups: [
-      { name: 'Upper Body', workouts: [{ name: 'Chest Press', sets: 3, reps: 10, weight: 135, notes: 'Felt strong' }] },
-      { name: 'Leg Day', workouts: [] }
-    ]
-  },
-  {
-    date: '2025-12-02',
-    groups: [
-      { name: 'Upper Body', workouts: [{ name: 'Arm Curls', sets: 3, reps: 12, weight: 25, notes: '' }] },
-      { name: 'Leg Day', workouts: [{ name: 'Leg Press', sets: 4, reps: 10, weight: 200, notes: 'Good form' }] }
-    ]
-  }
-]
 
 const LogsByDate = () => {
   const { date } = useParams()
-  const log = MOCK_LOGS.find((l) => l.date === date)
+  const [log, setLog] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
+  useEffect(() => {
+    const loadLogs = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await fetchLogsByDate(date)
+        setLog(data[0] || null) // API returns array with one object
+      } catch (err) {
+        console.error('Failed to fetch logs:', err)
+        setError('Failed to fetch logs')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadLogs()
+  }, [date])
+
+  if (loading) return <p className="logs-by-date__loading">Loading...</p>
+  if (error) return <p className="logs-by-date__error">{error}</p>
   if (!log) return (
     <div className="logs-by-date">
       <div className="logs-by-date__breadcrumb">
@@ -34,7 +40,6 @@ const LogsByDate = () => {
     </div>
   )
 
-  // Check if any group has workouts
   const hasWorkouts = log.groups.some(group => group.workouts.length > 0)
 
   return (

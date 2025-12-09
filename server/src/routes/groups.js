@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
         // Today's logs for this exercise
         const todayLogsForExercise = todayLogs
           .filter(log => log.exerciseId.toString() === exercise._id.toString() && log.groupId.toString() === group._id.toString())
-          .map(log => ({ sets: log.sets, reps: log.reps, weight: log.weight }));
+          .map(log => ({ sets: log.sets, reps: log.reps, weight: log.weight, logId: log._id }));
 
         // Last logs (combine sets with same reps/weight)
         const lastLogsForExerciseRaw = lastLogsMap.get(`${group._id}-${exercise._id}`) || [];

@@ -2,8 +2,34 @@
 import { Router } from 'express';
 import Exercise from '../models/exercises.js';
 import Group from '../models/groups.js'
+import Log from '../models/logs.js'
 
 const router = Router();
+
+// GET /api/exercises/:id
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch the exercise
+    const exercise = await Exercise.findById(id).lean();
+    if (!exercise) {
+      return res.status(404).json({ message: 'Exercise not found' });
+    }
+
+    // Fetch associated logs
+    const logs = await Log.find({ exerciseId: id }).sort({ date: -1 }).lean();
+
+    res.json({
+      ...exercise,
+      logs
+    });
+  } catch (err) {
+    console.error('Error fetching exercise by ID:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 router.get('/', async (req, res) => {
   try {

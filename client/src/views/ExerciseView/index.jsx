@@ -1,110 +1,63 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { fetchExercise } from '../../proxies'
 import './style.css'
-
-const MOCK_EXERCISES = [
-  {
-    id: 1,
-    name: 'Chest Press',
-    photo: '/image.png',
-    logs: [
-      {
-        date: '2025-12-01',
-        sets: 3,
-        reps: 10,
-        weight: 135,
-        notes: 'Felt strong, good form'
-      },
-      {
-        date: '2025-12-04',
-        sets: 4,
-        reps: 8,
-        weight: 140,
-        notes: 'Slight shoulder discomfort'
-      },
-      {
-        date: '2025-12-04',
-        sets: 4,
-        reps: 8,
-        weight: 140,
-        notes: 'Slight shoulder discomfort'
-      },
-      {
-        date: '2025-12-04',
-        sets: 4,
-        reps: 8,
-        weight: 140,
-        notes: 'Slight shoulder discomfort'
-      },
-      {
-        date: '2025-12-04',
-        sets: 4,
-        reps: 8,
-        weight: 140,
-        notes: 'Slight shoulder discomfort'
-      },
-      {
-        date: '2025-12-04',
-        sets: 4,
-        reps: 8,
-        weight: 140,
-        notes: 'Slight shoulder discomfort'
-      }
-    ]
-  },
-  {
-    id: 2,
-    name: 'Arm Curls',
-    photo: '/image.png',
-    logs: [
-      {
-        date: '2025-12-02',
-        sets: 3,
-        reps: 12,
-        weight: 25,
-        notes: 'Could increase weight next time'
-      }
-    ]
-  },
-  {
-    id: 3,
-    name: 'Leg Press',
-    photo: '/image.png',
-    logs: [
-      {
-        date: '2025-12-03',
-        sets: 4,
-        reps: 10,
-        weight: 200,
-        notes: 'Good depth, stable'
-      }
-    ]
-  }
-]
 
 const ExerciseView = () => {
   const { id } = useParams()
-  const exerciseId = parseInt(id)
-  const exercise = MOCK_EXERCISES.find((ex) => ex.id === exerciseId)
+  const exerciseId = id // assuming your API uses string IDs
+  const [exercise, setExercise] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Scroll to top on mount
+  // Fetch exercise on mount or when id changes
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [id])
+    setLoading(true)
+    setError(null)
 
+    fetchExercise(exerciseId)
+      .then((data) => {
+        setExercise(data)
+        setLoading(false)
+        window.scrollTo(0, 0) // scroll to top
+      })
+      .catch((err) => {
+        console.error('Error fetching exercise:', err)
+        setError('Failed to load exercise')
+        setLoading(false)
+      })
+  }, [exerciseId])
+
+  if (loading) return <div className='exercise-view'>Loading...</div>
+  if (error) return <div className='exercise-view'>{error}</div>
   if (!exercise) return <div className='exercise-view'>Exercise not found</div>
 
-  // Group logs by date
+  // Group logs by date, then merge same weight+reps
   const logsByDate = exercise.logs.reduce((acc, log) => {
-    if (!acc[log.date]) acc[log.date] = []
-    acc[log.date].push(log)
+    const dateKey = new Date(log.date).toISOString().split('T')[0] // YYYY-MM-DD
+    if (!acc[dateKey]) acc[dateKey] = []
+
+    // Check if a log with same weight and reps already exists
+    const existing = acc[dateKey].find(
+      (l) => l.weight === log.weight && l.reps === log.reps
+    )
+
+    if (existing) {
+      existing.sets += log.sets
+      // Optionally merge notes
+      if (log.notes)
+        existing.notes = existing.notes
+          ? `${existing.notes}; ${log.notes}`
+          : log.notes
+    } else {
+      acc[dateKey].push({ ...log }) // copy log
+    }
+
     return acc
   }, {})
-
   const sortedDates = Object.keys(logsByDate).sort(
     (a, b) => new Date(b) - new Date(a)
   )
-
   return (
     <div className='exercise-view'>
       <div className='exercise-view__breadcrumb'>

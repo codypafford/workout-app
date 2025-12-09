@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import WorkoutList from '../../components/WorkoutList'
+import ExerciseRow from '../../components/WorkoutList'
 import AddWorkoutGroupModal from '../../Modals/AddWorkoutGroup'
 import { getGroups, addWorkoutGroup } from '../../proxies'
 import './style.css'
@@ -48,9 +48,8 @@ const WorkoutView = () => {
       />
       
       {groupData.map((group) => {
-        // TODO: the compnent below should be called ExerciseRow
         return (
-          <WorkoutList
+          <ExerciseRow
             focusId={focusId}
             setFocusId={setFocusId}
             id={group.id}

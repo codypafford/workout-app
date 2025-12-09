@@ -31,4 +31,118 @@ router.post('/', async (req, res) => {
   }
 });
 
+// GET /api/logs/overview
+router.get('/overview', async (req, res) => {
+  try {
+    const logs = await Log.find().sort({ date: 1 }).lean(); // get all logs sorted by date
+
+    // Reduce logs into the desired format
+    const overviewMap = {};
+
+    logs.forEach(log => {
+      const dateKey = log.date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+      if (!overviewMap[dateKey]) {
+        overviewMap[dateKey] = {};
+      }
+
+      const groupName = log.groupNameSnapshot || 'Unknown Group';
+
+      if (!overviewMap[dateKey][groupName]) {
+        overviewMap[dateKey][groupName] = [];
+      }
+
+      overviewMap[dateKey][groupName].push(log.exerciseNameSnapshot || 'Unknown Exercise');
+    });
+
+    const overview = Object.entries(overviewMap).map(([date, groupsObj]) => {
+      const groups = Object.entries(groupsObj).map(([name, workouts]) => ({
+        name,
+        workouts
+      }));
+
+      return { date, groups };
+    });
+
+    res.json(overview);
+  } catch (err) {
+    console.error('Error fetching overview:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/logs/:date
+router.get('/:date', async (req, res) => {
+  try {
+    const { date } = req.params; // e.g., "2025-12-09"
+
+    if (!date) {
+      return res.status(400).json({ message: 'Date parameter is required' });
+    }
+
+    // Match logs where date in YYYY-MM-DD format equals the param
+    const logs = await Log.find({
+      $expr: {
+        $eq: [
+          { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+          date
+        ]
+      }
+    }).sort({ groupNameSnapshot: 1 }).lean();
+
+    // Group by groupNameSnapshot
+    const overviewMap = {};
+    logs.forEach(log => {
+      const groupName = log.groupNameSnapshot || 'Unknown Group';
+      if (!overviewMap[groupName]) overviewMap[groupName] = [];
+
+      overviewMap[groupName].push({
+        name: log.exerciseNameSnapshot || 'Unknown Exercise',
+        sets: log.sets,
+        reps: log.reps,
+        weight: log.weight,
+        notes: log.notes || ''
+      });
+    });
+
+    const groups = Object.entries(overviewMap).map(([name, workouts]) => ({
+      name,
+      workouts
+    }));
+
+    res.json([
+      {
+        date,
+        groups
+      }
+    ]);
+  } catch (err) {
+    console.error('Error fetching logs by date:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// DELETE /api/logs/:id
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: 'Log ID is required' });
+    }
+
+    const deletedLog = await Log.findByIdAndDelete(id);
+
+    if (!deletedLog) {
+      return res.status(404).json({ message: 'Log not found' });
+    }
+
+    res.json({ message: 'Log deleted successfully', log: deletedLog });
+  } catch (err) {
+    console.error('Error deleting log:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router

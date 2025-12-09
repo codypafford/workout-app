@@ -1,32 +1,24 @@
-// src/views/Logs/LogsOverview.jsx
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { fetchLogsOverview } from '../../proxies'
 import './style.css'
 
-const MOCK_LOGS = [
-  {
-    date: '2025-12-01',
-    groups: [
-      { name: 'Upper Body', workouts: ['Chest Press', 'Arm Curls'] },
-      { name: 'Leg Day', workouts: [] }
-    ]
-  },
-  {
-    date: '2025-12-02',
-    groups: [
-      { name: 'Upper Body', workouts: ['Arm Curls'] },
-      { name: 'Leg Day', workouts: ['Leg Press'] }
-    ]
-  },
-  {
-    date: '2025-12-03',
-    groups: [
-      { name: 'Upper Body', workouts: [] },
-      { name: 'Leg Day', workouts: ['Leg Press', 'Calf Press'] }
-    ]
-  }
-]
-
 const LogsOverview = () => {
+  const [logs, setLogs] = useState([])
+
+  useEffect(() => {
+    const loadLogs = async () => {
+      try {
+        const data = await fetchLogsOverview()
+        setLogs(data)
+      } catch (err) {
+        console.error('Failed to fetch logs overview:', err)
+      }
+    }
+
+    loadLogs()
+  }, [])
+
   return (
     <div className='logs-overview'>
       <div className="logs-overview__breadcrumb">
@@ -36,8 +28,9 @@ const LogsOverview = () => {
       <h2 className='logs-overview__title'>Workout Logs</h2>
 
       <ul className='logs-overview__list'>
-        {MOCK_LOGS.sort((a, b) => new Date(b.date) - new Date(a.date)).map(
-          (log) => {
+        {logs
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .map((log) => {
             const activeGroups = log.groups.filter((g) => g.workouts.length > 0)
             if (activeGroups.length === 0) return null
 
@@ -51,8 +44,7 @@ const LogsOverview = () => {
                 </Link>
               </li>
             )
-          }
-        )}
+          })}
       </ul>
     </div>
   )

@@ -26,7 +26,6 @@ export async function addWorkoutGroup(groupData) {
 }
 
 export async function deleteWorkoutGroup(groupId) {
-    console.log('send this id: ', groupId)
   const res = await fetch(`/api/groups/${groupId}`, {
     method: 'DELETE',
   });
@@ -36,6 +35,12 @@ export async function deleteWorkoutGroup(groupId) {
 
 // --------------------
 // EXERCISE
+export async function fetchExercise(id) {
+  const res = await fetch(`/api/exercises/${id}`);
+  if (!res.ok) throw new Error('Failed to fetch exercise');
+  return res.json();
+}
+
 export async function fetchExercises() {
   const res = await fetch('/api/exercises');
   if (!res.ok) throw new Error('Failed to fetch exercises');
@@ -75,4 +80,24 @@ export async function addLog(logData) {
     throw err;
   }
 };
+
+export async function fetchLogsOverview() {
+  const res = await fetch('/api/logs/overview');
+  if (!res.ok) throw new Error('Failed to fetch logs overview');
+  return res.json();
+}
+
+export async function fetchLogsByDate(date) {
+  const res = await fetch(`/api/logs/${date}`);
+  if (!res.ok) throw new Error('Failed to fetch logs by date');
+  return res.json();
+}
+
+export async function deleteLog(logId) {
+  const res = await fetch(`/api/logs/${logId}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete log');
+  return res.json();
+}
+
+
 
