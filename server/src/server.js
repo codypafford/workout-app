@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import { connectDB } from './config/db.js'
+import cors from 'cors'
 import groupRoutes from './routes/groups.js'
 import exerciseRoutes from './routes/exercise.js'
 import logRoutes from './routes/logs.js'
