@@ -1,12 +1,14 @@
+const baseUri = import.meta.env.VITE_BASE_URI;
+
 // GROUPS
 export async function getGroups() {
-  const res = await fetch('/api/groups');
+  const res = await fetch(`${baseUri}/api/groups`);
   return res.json();
 }
 
 export async function addWorkoutGroup(groupData) {
   try {
-    const response = await fetch('/api/groups', {
+    const response = await fetch(`${baseUri}/api/groups`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +28,7 @@ export async function addWorkoutGroup(groupData) {
 }
 
 export async function deleteWorkoutGroup(groupId) {
-  const res = await fetch(`/api/groups/${groupId}`, {
+  const res = await fetch(`${baseUri}/api/groups/${groupId}`, {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Failed to delete group');
@@ -36,19 +38,19 @@ export async function deleteWorkoutGroup(groupId) {
 // --------------------
 // EXERCISE
 export async function fetchExercise(id) {
-  const res = await fetch(`/api/exercises/${id}`);
+  const res = await fetch(`${baseUri}/api/exercises/${id}`);
   if (!res.ok) throw new Error('Failed to fetch exercise');
   return res.json();
 }
 
 export async function fetchExercises() {
-  const res = await fetch('/api/exercises');
+  const res = await fetch(`${baseUri}/api/exercises`);
   if (!res.ok) throw new Error('Failed to fetch exercises');
   return res.json();
 }
 
 export async function addExercise(exercise) {
-  const res = await fetch('/api/exercises', {
+  const res = await fetch(`${baseUri}/api/exercises`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(exercise)
@@ -58,7 +60,7 @@ export async function addExercise(exercise) {
 }
 
 export async function deleteExercise(id) {
-  const res = await fetch(`/api/exercises/${id}`, {
+  const res = await fetch(`${baseUri}/api/exercises/${id}`, {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Failed to delete exercise');
@@ -70,7 +72,7 @@ export async function deleteExercise(id) {
 // LOGS
 export async function addLog(logData) {
   try {
-    const response = await fetch('/api/logs', {
+    const response = await fetch(`${baseUri}/api/logs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,19 +93,19 @@ export async function addLog(logData) {
 };
 
 export async function fetchLogsOverview() {
-  const res = await fetch('/api/logs/overview');
+  const res = await fetch(`${baseUri}/api/logs/overview`);
   if (!res.ok) throw new Error('Failed to fetch logs overview');
   return res.json();
 }
 
 export async function fetchLogsByDate(date) {
-  const res = await fetch(`/api/logs/${date}`);
+  const res = await fetch(`${baseUri}/api/logs/${date}`);
   if (!res.ok) throw new Error('Failed to fetch logs by date');
   return res.json();
 }
 
 export async function deleteLog(logId) {
-  const res = await fetch(`/api/logs/${logId}`, { method: 'DELETE' });
+  const res = await fetch(`${baseUri}/api/logs/${logId}`, { method: 'DELETE' });
   if (!res.ok) throw new Error('Failed to delete log');
   return res.json();
 }
