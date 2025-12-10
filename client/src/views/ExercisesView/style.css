@@ -1,7 +1,7 @@
 .exercises-view {
   max-width: 900px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.5rem; /* less padding */
   color: black;
 }
 
@@ -10,21 +10,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem; /* smaller gap */
 }
 
 .exercises-view__title {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.25rem; /* smaller font */
 }
 
 .exercises-view__add-btn {
   background: black;
   color: white;
   border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  font-size: 16px;
+  padding: 0.4rem 0.8rem; /* smaller button */
+  border-radius: 4px; /* tighter radius */
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -35,25 +35,26 @@
 /* Grid */
 .exercises-view__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* smaller min width */
+  gap: 0.5rem; /* tighter spacing */
 }
 
 /* Exercise card */
 .exercises-view__card {
   background: white;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 6px; /* slightly smaller radius */
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08); /* lighter shadow */
+  font-size: 0.85rem; /* smaller text overall */
 }
 
 /* Image */
 .exercises-view__image {
   width: 100%;
-  height: 120px;
+  height: 100px; /* smaller image */
   object-fit: cover;
 }
 
@@ -62,11 +63,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0.75rem;
+  padding: 0.3rem 0.5rem; /* smaller padding */
 }
 
 .exercises-view__name {
-  font-size: 0.95rem;
+  font-size: 0.85rem; /* smaller name */
   font-weight: 500;
 }
 
@@ -75,7 +76,7 @@
   background: none;
   border: none;
   color: #999;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -85,7 +86,7 @@
 
 /* Empty state */
 .exercises-view__empty {
-  margin-top: 2rem;
+  margin-top: 1rem;
   text-align: center;
   color: #666;
 }
@@ -93,8 +94,10 @@
 /* Mobile polish */
 @media (max-width: 480px) {
   .exercises-view__image {
-    height: 100px;
+    height: 80px; /* smaller on mobile */
+  }
+
+  .exercises-view__grid {
+    gap: 0.4rem;
   }
 }
-
-

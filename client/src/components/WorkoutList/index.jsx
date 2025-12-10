@@ -20,6 +20,7 @@ const WorkoutList = ({
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false)
   const [confirmModalOpen, setConfirmModalOpen] = useState(false)
   const [enlargedImage, setEnlargedImage] = useState(null) // new state for image modal
+  const [doneExercises, setDoneExercises] = useState({})
 
   const rowRefs = useRef({})
 
@@ -27,10 +28,12 @@ const WorkoutList = ({
     setExpandedItemId((prev) => (prev === id ? null : id))
   }
 
+  const markAsDone = (exerciseId) => {
+    setDoneExercises((prev) => ({ ...prev, [exerciseId]: true }))
+  }
   const handleImageUpload = (e, id) => {
     // const file = e.target.files?.[0]
     // if (!file) return
-
     // const reader = new FileReader()
     // reader.onload = () => {
     //   setExerciseItems((prev) =>
@@ -90,14 +93,19 @@ const WorkoutList = ({
         <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
           {groupName}
         </div>
-        <div onClick={() => setConfirmModalOpen(true)} className={`${ROOT_CN}__trash`}>
+        <div
+          onClick={() => setConfirmModalOpen(true)}
+          className={`${ROOT_CN}__trash`}
+        >
           🗑️
         </div>
       </div>
 
       <div className={`${ROOT_CN}__body`}>
         <div className={`${ROOT_CN}__meta`}>
-          <button onClick={() => setExerciseModalOpen(true)}>+ Add Exercise</button>
+          <button onClick={() => setExerciseModalOpen(true)}>
+            + Add Exercise
+          </button>
         </div>
         <AddWorkoutModal
           show={exerciseModalOpen}
@@ -106,8 +114,8 @@ const WorkoutList = ({
         />
         <ConfirmModal
           show={confirmModalOpen}
-          header="Delete Group?"
-          bodyText="This action cannot be undone."
+          header='Delete Group?'
+          bodyText='This action cannot be undone.'
           onClose={() => setConfirmModalOpen(false)}
           onSubmit={deleteGroup}
         />
@@ -124,7 +132,11 @@ const WorkoutList = ({
               <div className={`${ROOT_CN}__row`}>
                 <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
                   <span
-                    className={`${ROOT_CN}__expand-name`}
+                    className={`${ROOT_CN}__expand-name ${
+                      doneExercises[item.id]
+                        ? `${ROOT_CN}__expand-name--done`
+                        : ''
+                    }`}
                     onClick={() => toggleItem(item.id)}
                   >
                     {item.name}&nbsp;
@@ -185,6 +197,7 @@ const WorkoutList = ({
                 groupId={id}
                 groupName={groupName}
                 refresh={refresh}
+                markAsDone={markAsDone}
               />
 
               {/* Image Modal */}

@@ -57,7 +57,7 @@
 /* Save button */
 button.workout-list__save {
   margin-top: 0.5rem;
-  width: fit-content%;
+  width: fit-content;
   border: 2px solid #ffd900;
   color: #ffd900;
 }
@@ -85,3 +85,33 @@ button.workout-list__save {
   font-size: 12px;
   margin-bottom: 1rem;;
 }
+
+.workout-list__mark-done {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.workout-list__mark-done:hover {
+  background: #218838;
+}
+
+.workout-list__done-label {
+  color: #28a745;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.workout-list__expand-name--done {
+  text-decoration: line-through;
+  color: #28a745;
+  opacity: 0.6;
+  transition: all 0.3s;
+}
+
+

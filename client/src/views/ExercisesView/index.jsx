@@ -38,7 +38,7 @@ export default function ExercisesView() {
       setExercises((prev) => [
         ...prev,
         {
-          id: newExercise._id,
+          id: newExercise.id,
           name: newExercise.name,
           photo: newExercise.photo || '/image.png'
         }

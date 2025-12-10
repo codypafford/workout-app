@@ -11,7 +11,8 @@ const FormData = ({
   item,
   groupId,
   groupName,
-  refresh
+  refresh,
+  markAsDone
 }) => {
   const [sets, setSets] = useState([
     { ...EMPTY_SET },
@@ -19,6 +20,7 @@ const FormData = ({
     { ...EMPTY_SET }
   ])
   const [highlightLogIds, setHighlightLogIds] = useState([])
+  const [done, setDone] = useState(false)
 
   useEffect(() => {
     if (isExpanded) {
@@ -31,6 +33,11 @@ const FormData = ({
     setSets((prev) =>
       prev.map((s, i) => (i === index ? { ...s, [key]: value } : s))
     )
+  }
+
+  const handleMarkDone = () => {
+    setDone(true)
+    markAsDone(item.id)
   }
 
   const handleSaveLog = async () => {
@@ -117,7 +124,9 @@ const FormData = ({
 
       {/* Inputs */}
       <div className={`${className}__set-table`}>
-        <div className={`${className}__strategy`}>Suggested Sets | Pyramid Strategy</div>
+        <div className={`${className}__strategy`}>
+          Suggested Sets | Pyramid Strategy
+        </div>
         <div className={`${className}__set-header`}>
           <span>Set</span>
           <span>Reps</span>
@@ -163,6 +172,19 @@ const FormData = ({
         <button className={`${className}__save`} onClick={handleSaveLog}>
           Save Log
         </button>
+        {!done && (
+          <button
+            className={`${className}__mark-done`}
+            onClick={handleMarkDone}
+            style={{ marginLeft: '0.5rem' }}
+          >
+            Mark Done
+          </button>
+        )}
+
+        {done && (
+          <span className={`${className}__done-label`}>✅ Exercise done</span>
+        )}
       </div>
     </div>
   )
