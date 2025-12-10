@@ -135,7 +135,7 @@ const FormData = ({
               <option value='' disabled>
                 Reps
               </option>
-              {[...Array(20)].map((_, n) => (
+              {[...Array(50)].map((_, n) => (
                 <option key={n + 1} value={n + 1}>
                   {n + 1}
                 </option>

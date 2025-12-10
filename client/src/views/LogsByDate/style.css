@@ -48,6 +48,8 @@
 }
 
 .logs-by-date__workout {
+  display: flex;
+  justify-content: space-around;
   padding: 6px 0;
   border-bottom: 1px solid #ddd;
 }
