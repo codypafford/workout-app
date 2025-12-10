@@ -59,7 +59,7 @@ button.workout-list__save {
   margin-top: 0.5rem;
   width: fit-content;
   border: 2px solid #ffd900;
-  color: #ffd900;
+  color: #ffd900 !important;
 }
 
 /* Highlight */
@@ -87,7 +87,7 @@ button.workout-list__save {
 }
 
 .workout-list__mark-done {
-  background: #28a745;
+  background: #28a745 !important;
   color: white;
   border: none;
   padding: 0.5rem 1rem;

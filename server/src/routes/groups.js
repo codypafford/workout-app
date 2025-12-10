@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
           id: exercise._id,
           name: exercise.name,
           image: exercise.photo || '',
-          last: lastLogsForExercise,
+          last: lastLogsForExercise.reverse(), // reverse because we had to order it the wrong way for mostRecentDate
           today: todayLogsForExercise
         }
       })
