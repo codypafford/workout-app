@@ -1,89 +1,64 @@
 .workout-list__history {
-  display: flex;
+  display: flex !important;
+  justify-content: space-evenly;
   gap: 1rem;
   width: 100%;
+  align-items: flex-start;
 }
 
-.workout-list__history > .workout-list__extra-last {
-  flex: 1;
-}
-
-.workout-list__extra-today {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.workout-list__extra-notes {
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
-
-.workout-list__input-label {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 4px;
-}
-
-/* Inputs and textareas */
-.workout-list input,
-.workout-list select,
-.workout-list textarea {
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 8px 10px;
-  font-size: 16px; /* prevents zoom on mobile */
+/* Set table */
+.workout-list__set-table {
+  margin-top: 1rem;
   width: 100%;
-  box-sizing: border-box;
-  /* margin-bottom: 12px; */
+  max-width: 420px;
 }
 
-/* Focus styles */
-.workout-list input:focus,
-.workout-list select:focus,
-.workout-list textarea:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 2px rgba(0, 123, 255, 0.5);
+/* Header */
+.workout-list__set-header {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  font-size: 11px;
+  color: gold;
+  margin-bottom: 4px;
+  padding: 0 4px;
 }
 
-/* Disabled placeholder option */
-.workout-list__inputs select:has(option:disabled:checked) {
-  color: #999;
+/* Rows */
+.workout-list__set-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 6px;
 }
 
-/* Mobile spacing polish */
+/* Set number */
+.workout-list__set-number {
+  font-size: 13px;
+  text-align: center;
+  color: gold;
+}
+
+/* Inputs */
+.workout-list__set-row select {
+  height: 34px;
+  font-size: 14px;
+  padding: 4px 6px;
+}
+
+/* Mobile polish */
 @media (max-width: 480px) {
-  .workout-list__inputs {
-    flex-direction: column;
-    gap: 0.5rem;
+  .workout-list__set-table {
+    max-width: 100%;
   }
 }
 
-/* Desktop-only custom styling */
-@media (hover: hover) and (pointer: fine) {
-  .workout-list__inputs select {
-    appearance: none;
-    -webkit-appearance: none;
-
-    background-image:
-      linear-gradient(45deg, transparent 50%, #555 50%),
-      linear-gradient(135deg, #555 50%, transparent 50%);
-    background-position:
-      calc(100% - 18px) calc(50% - 3px),
-      calc(100% - 12px) calc(50% - 3px);
-    background-size: 6px 6px;
-    background-repeat: no-repeat;
-    padding-right: 36px;
-  }
-}
-
-/* Save btn */
+/* Save button */
 button.workout-list__save {
-    color: #ffd900 !important; 
-    border: 2px solid #ffd900 !important;
+  margin-top: 0.5rem;
+  width: 100%;
+  border: 2px solid #ffd900;
+  color: #ffd900;
 }
 
 /* Highlight */
@@ -103,4 +78,9 @@ button.workout-list__save {
   }
 }
 
-
+/* Strategy Text */
+.workout-list__strategy {
+  color: rgb(144, 236, 144);
+  font-size: 12px;
+  margin-bottom: 1rem;;
+}
