@@ -39,33 +39,36 @@ const LogsByDate = () => {
     }
   }
 
-  if (loading) return <p className="logs-by-date__loading">Loading...</p>
-  if (error) return <p className="logs-by-date__error">{error}</p>
-  if (!log) return (
-    <div className="logs-by-date">
-      <div className="logs-by-date__breadcrumb">
-        <Link to="/logs" className="logs-by-date__breadcrumb-link">
-          &larr; Back to Logs Overview
-        </Link>
+  if (loading) return <p className='logs-by-date__loading'>Loading...</p>
+  if (error) return <p className='logs-by-date__error'>{error}</p>
+  if (!log)
+    return (
+      <div className='logs-by-date'>
+        <div className='logs-by-date__breadcrumb'>
+          <Link to='/logs' className='logs-by-date__breadcrumb-link'>
+            &larr; Back to Logs Overview
+          </Link>
+        </div>
+        <p className='logs-by-date__empty'>No logs for this date</p>
       </div>
-      <p className="logs-by-date__empty">No logs for this date</p>
-    </div>
+    )
+
+  const hasWorkouts = log.groups.some(
+    (group) => group.workouts && group.workouts.length > 0
   )
 
-  const hasWorkouts = log.groups.some(group => (group.workouts && group.workouts.length > 0))
-
   return (
-    <div className="logs-by-date">
-      <div className="logs-by-date__breadcrumb">
-        <Link to="/logs" className="logs-by-date__breadcrumb-link">
+    <div className='logs-by-date'>
+      <div className='logs-by-date__breadcrumb'>
+        <Link to='/logs' className='logs-by-date__breadcrumb-link'>
           &larr; Back to Logs Overview
         </Link>
       </div>
 
-      <h2 className="logs-by-date__title">Logs for {date}</h2>
+      <h2 className='logs-by-date__title'>Logs for {date}</h2>
 
       {hasWorkouts ? (
-        log.groups.map(group => {
+        log.groups.map((group) => {
           // Group workouts by workout.name (use name because there is no id)
           const exercisesByName = group.workouts.reduce((acc, workout) => {
             const key = workout.name ?? 'Unknown Exercise'
@@ -75,40 +78,55 @@ const LogsByDate = () => {
           }, {})
 
           return (
-            <div key={group.name} className="logs-by-date__group">
-              <h3 className="logs-by-date__group-title">{group.name}</h3>
+            <div key={group.name} className='logs-by-date__group'>
+              <h3 className='logs-by-date__group-title'>{group.name}</h3>
               <hr />
 
-              {Object.entries(exercisesByName).map(([exerciseName, workouts]) => (
-                <div
-                  key={`${group.name}-${exerciseName}`}
-                  className="logs-by-date__exercise-group"
-                >
-                  <h4 className="logs-by-date__exercise-title">{exerciseName}</h4>
-
-                  <ul className="logs-by-date__workouts-list">
-                    {workouts.map(w => (
-                      <li key={w.logId} className="logs-by-date__workout">
-                        <span className="logs-by-date__workout-info">
-                          {w.sets} sets x {w.reps} reps @ {w.weight} lbs
-                        </span>
-                        {w.notes && <p className="logs-by-date__workout-notes">Notes: {w.notes}</p>}
-                        <span
-                          className="logs-by-date__delete-btn"
-                          onClick={() => handleDelete(w.logId)}
-                        >
-                          🗑️
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              {Object.entries(exercisesByName).map(
+                ([exerciseName, workouts]) => (
+                  <div
+                    key={`${group.name}-${exerciseName}`}
+                    className='logs-by-date__exercise-group'
+                  >
+                    <h4 className='logs-by-date__exercise-title'>
+                      {exerciseName}
+                    </h4>
+                    <span>
+                      <span className='logs-by-date__exercise-total-weight'>
+                        Total Weight Lifted:{' '}
+                        {workouts.reduce((sum, curr) => {
+                          return sum + curr.sets * curr.reps * curr.weight
+                        }, 0)} lbs
+                      </span>
+                    </span>
+                    <ul className='logs-by-date__workouts-list'>
+                      {workouts.map((w) => (
+                        <li key={w.logId} className='logs-by-date__workout'>
+                          <span className='logs-by-date__workout-info'>
+                            {w.sets} sets x {w.reps} reps @ {w.weight} lbs
+                          </span>
+                          {w.notes && (
+                            <p className='logs-by-date__workout-notes'>
+                              Notes: {w.notes}
+                            </p>
+                          )}
+                          <span
+                            className='logs-by-date__delete-btn'
+                            onClick={() => handleDelete(w.logId)}
+                          >
+                            🗑️
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              )}
             </div>
           )
         })
       ) : (
-        <p className="logs-by-date__empty">No logs for this date</p>
+        <p className='logs-by-date__empty'>No logs for this date</p>
       )}
     </div>
   )

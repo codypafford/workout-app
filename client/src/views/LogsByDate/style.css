@@ -78,3 +78,12 @@
   color: #666;
 }
 
+.logs-by-date__exercise-title {
+  margin-bottom: 0;
+}
+
+.logs-by-date__exercise-total-weight {
+  font-size: small;
+  color: green;
+}
+
