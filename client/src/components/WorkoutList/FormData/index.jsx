@@ -47,6 +47,9 @@ const FormData = ({
       return
     }
 
+      const ok = window.confirm(`Save ${completedSets.length} set(s)?`)
+      if (!ok) return
+
     try {
       const savedIds = []
 

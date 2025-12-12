@@ -14,6 +14,7 @@ const LogsByDate = () => {
     setError(null)
     try {
       const data = await fetchLogsByDate(date)
+      console.log('got logs: ', data)
       setLog(data[0] || null)
     } catch (err) {
       console.error('Failed to fetch logs:', err)
@@ -51,7 +52,7 @@ const LogsByDate = () => {
     </div>
   )
 
-  const hasWorkouts = log.groups.some(group => group.workouts.length > 0)
+  const hasWorkouts = log.groups.some(group => (group.workouts && group.workouts.length > 0))
 
   return (
     <div className="logs-by-date">
@@ -65,10 +66,11 @@ const LogsByDate = () => {
 
       {hasWorkouts ? (
         log.groups.map(group => {
-          // Group workouts by exercise ID
-          const exercisesById = group.workouts.reduce((acc, workout) => {
-            if (!acc[workout.id]) acc[workout.id] = []
-            acc[workout.id].push(workout)
+          // Group workouts by workout.name (use name because there is no id)
+          const exercisesByName = group.workouts.reduce((acc, workout) => {
+            const key = workout.name ?? 'Unknown Exercise'
+            if (!acc[key]) acc[key] = []
+            acc[key].push(workout)
             return acc
           }, {})
 
@@ -77,28 +79,31 @@ const LogsByDate = () => {
               <h3 className="logs-by-date__group-title">{group.name}</h3>
               <hr />
 
-              {Object.keys(exercisesById).map(exId => {
-                const workouts = exercisesById[exId]
-                return (
-                  <div key={exId} className="logs-by-date__exercise-group">
-                    <h4 className="logs-by-date__exercise-title">{workouts[0].name}</h4>
-                    <ul className="logs-by-date__workouts-list">
-                      {workouts.map(w => (
-                        <li key={w.logId} className="logs-by-date__workout">
-                          <span className="logs-by-date__workout-info">{w.sets} sets x {w.reps} reps @ {w.weight} lbs</span>
-                          {w.notes && <p className="logs-by-date__workout-notes">Notes: {w.notes}</p>}
-                          <span
-                            className="logs-by-date__delete-btn"
-                            onClick={() => handleDelete(w.logId)}
-                          >
-                            🗑️
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              })}
+              {Object.entries(exercisesByName).map(([exerciseName, workouts]) => (
+                <div
+                  key={`${group.name}-${exerciseName}`}
+                  className="logs-by-date__exercise-group"
+                >
+                  <h4 className="logs-by-date__exercise-title">{exerciseName}</h4>
+
+                  <ul className="logs-by-date__workouts-list">
+                    {workouts.map(w => (
+                      <li key={w.logId} className="logs-by-date__workout">
+                        <span className="logs-by-date__workout-info">
+                          {w.sets} sets x {w.reps} reps @ {w.weight} lbs
+                        </span>
+                        {w.notes && <p className="logs-by-date__workout-notes">Notes: {w.notes}</p>}
+                        <span
+                          className="logs-by-date__delete-btn"
+                          onClick={() => handleDelete(w.logId)}
+                        >
+                          🗑️
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           )
         })
