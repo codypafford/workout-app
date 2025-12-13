@@ -1,0 +1,23 @@
+.planned-workout__container {
+    width: 100%;
+    align-items: center;
+}
+
+.planned-workout__row {
+    display: flex;
+    flex-direction: row;
+    /* gap:3rem; */
+    justify-content: space-between;
+    /* width: 100%; */
+}
+
+.planned-workout__row-tem {
+    /* padding-left: 2rem; */
+    padding-right: 4rem;
+}
+
+input[type='checkbox'] {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}

@@ -14,7 +14,6 @@ const LogsByDate = () => {
     setError(null)
     try {
       const data = await fetchLogsByDate(date)
-      console.log('got logs: ', data)
       setLog(data[0] || null)
     } catch (err) {
       console.error('Failed to fetch logs:', err)

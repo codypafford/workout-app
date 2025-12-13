@@ -12,7 +12,8 @@ const WorkoutList = ({
   groupName,
   focusId,
   setFocusId,
-  refresh
+  refresh,
+  isPlanned = false
 }) => {
   const ROOT_CN = 'workout-list'
 
@@ -62,10 +63,7 @@ const WorkoutList = ({
   }
 
   const onAddExercise = async (exercise) => {
-    console.log('calling')
-    console.log()
     await addExercise({ ...exercise, groupId: id })
-    console.log('added...')
     await refresh()
   }
 
@@ -88,7 +86,7 @@ const WorkoutList = ({
             }
           }}
         >
-          {inStartMode ? 'Stop' : 'Start'}
+          {!isPlanned ? (inStartMode ? 'Stop' : 'Start') : ''}
         </div>
         <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
           {groupName}
@@ -97,16 +95,18 @@ const WorkoutList = ({
           onClick={() => setConfirmModalOpen(true)}
           className={`${ROOT_CN}__trash`}
         >
-          🗑️
+          {isPlanned ? '' : (<>🗑️</>)}
         </div>
       </div>
 
       <div className={`${ROOT_CN}__body`}>
-        <div className={`${ROOT_CN}__meta`}>
-          <button onClick={() => setExerciseModalOpen(true)}>
-            + Add Exercise
-          </button>
-        </div>
+        {!isPlanned && (
+          <div className={`${ROOT_CN}__meta`}>
+            <button onClick={() => setExerciseModalOpen(true)}>
+              + Add Exercise
+            </button>
+          </div>
+        )}
         <AddWorkoutModal
           show={exerciseModalOpen}
           onClose={() => setExerciseModalOpen(false)}

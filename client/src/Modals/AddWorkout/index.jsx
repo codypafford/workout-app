@@ -9,7 +9,6 @@ const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
 
   // Reset state when modal opens
   useEffect(() => {
-    console.log('on mount!!')
     if (show) {
       setSelectedWorkoutId('');
       setNewWorkoutName('');
@@ -54,7 +53,6 @@ const AddWorkoutModal = ({ show, onClose, onAdd, new: isNew = false }) => {
       onClose();
     }
   };
-  console.log('is modal open: ', show)
   if (!show) return null;
 
   return (

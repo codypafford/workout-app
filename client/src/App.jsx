@@ -5,6 +5,8 @@ import ExerciseView from './views/ExerciseView'
 import ExercisesView from './views/ExercisesView'
 import LogsOverview from './views/LogsOverview'
 import LogsByDate from './views/LogsByDate'
+import PlanWorkout from './views/PlanWorkout'
+
 import './App.css'
 
 const App = () => {
@@ -55,7 +57,8 @@ const App = () => {
     <div>
       <nav>
         <Link to="/">Home</Link> | <Link to="/logs">Logs</Link> |{' '}
-        <Link to="/exercises">Exercises</Link>
+        <Link to="/exercises">Exercises</Link> |{' '}
+        <Link to="/plan-workout">Planned Workout</Link>
       </nav>
 
       <main>
@@ -65,6 +68,7 @@ const App = () => {
           <Route path="/exercises" element={<ExercisesView />} />
           <Route path="/logs" element={<LogsOverview />} />
           <Route path="/logs/:date" element={<LogsByDate />} />
+          <Route path="/plan-workout" element={<PlanWorkout />} />
         </Routes>
       </main>
     </div>

@@ -5,6 +5,7 @@ import cors from 'cors'
 import groupRoutes from './routes/groups.js'
 import exerciseRoutes from './routes/exercise.js'
 import logRoutes from './routes/logs.js'
+import plannedWorkoutRoutes from './routes/plannedWorkout.js'
 
 dotenv.config()
 
@@ -30,6 +31,7 @@ app.get('/health', (req, res) => {
 app.use('/api/groups', groupRoutes)
 app.use('/api/exercises', exerciseRoutes)
 app.use('/api/logs', logRoutes)
+app.use('/api/planned-workout', plannedWorkoutRoutes)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {

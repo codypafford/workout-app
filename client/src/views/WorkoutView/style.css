@@ -31,3 +31,28 @@
   font-size: 20px;
   line-height: 1;
 }
+
+/* Planned Workout */
+.workout-view__planned-workout-header {
+  display: flex;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #2a9d8f;
+  user-select: none;
+}
+
+.workout-view__planned-workout-header span {
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.workout-view__planned-workout-header span:hover {
+  color: #21867a;
+  transform: translateY(-1px);
+}
+
+.workout-view__planned-workout-header span.active {
+  color: #e76f51; /* highlight color */
+  font-weight: 700;
+}
