@@ -36,25 +36,19 @@ const WorkoutView = () => {
     applyTabFilter(activeTab, sortedGroups)
   }
 
-  const fetchPlannedWorkout = async () => {
-    const plannedWorkout = await getPlannedWorkouts()
-    if (plannedWorkout?.exerciseIds?.length) {
-      setPlannedExerciseIds(plannedWorkout.exerciseIds)
-    }
-  }
-
-  const applyTabFilter = (tab, groups = allGroupData) => {
+  const applyTabFilter = (
+    tab,
+    groups = allGroupData,
+    plannedIds = plannedExerciseIds
+  ) => {
     if (!groups) return
 
     if (tab === 'planned') {
       const filteredGroups = groups
         .map((group) => ({
           ...group,
-          exercises: group.exercises.filter((ex) =>
-            plannedExerciseIds.includes(ex.id)
-          )
+          exercises: group.exercises.filter((ex) => plannedIds.includes(ex.id))
         }))
-        // remove groups with no planned exercises
         .filter((group) => group.exercises.length > 0)
 
       setGroupData(filteredGroups)
@@ -66,11 +60,35 @@ const WorkoutView = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab)
     applyTabFilter(tab)
+    localStorage.setItem('workoutActiveTab', tab) // store current tab
   }
 
+  // Initial load
   useEffect(() => {
-    fetchGroups()
-    fetchPlannedWorkout()
+    const savedTab = localStorage.getItem('workoutActiveTab') || 'all'
+    setActiveTab(savedTab)
+
+    const loadData = async () => {
+      const groups = await getGroups()
+      const sortedGroups = groups
+        .sort((a, b) => a.groupName.localeCompare(b.groupName))
+        .map((group) => ({
+          ...group,
+          exercises: group.exercises.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          )
+        }))
+      setAllGroupData(sortedGroups)
+
+      const plannedWorkout = await getPlannedWorkouts()
+      const ids = plannedWorkout?.exerciseIds ?? []
+      setPlannedExerciseIds(ids)
+
+      // Now we can safely filter with both groups and planned IDs
+      applyTabFilter(savedTab, sortedGroups, ids)
+    }
+
+    loadData()
   }, [])
 
   if (groupData == null) return <div>Loading...</div>
