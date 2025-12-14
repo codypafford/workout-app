@@ -47,8 +47,8 @@ const FormData = ({
       return
     }
 
-      const ok = window.confirm(`Save ${completedSets.length} set(s)?`)
-      if (!ok) return
+    const ok = window.confirm(`Save ${completedSets.length} set(s)?`)
+    if (!ok) return
 
     try {
       const savedIds = []
@@ -79,6 +79,46 @@ const FormData = ({
     } catch (err) {
       console.error('Failed to save log:', err)
     }
+  }
+
+  const increase = () => {
+    if (!item.last || !item.last.length) return
+
+    const targetReps = [16, 12, 8]
+
+    setSets((prevSets) => {
+      // Check if this is the first time: any set not matching pyramid?
+      const firstRun = prevSets.some(
+        (s, i) => parseInt(s.reps) !== targetReps[i]
+      )
+
+      if (firstRun) {
+        // First click: intelligently align reps and weight
+        return targetReps.map((target, i) => {
+          // Find the last set closest to this target
+          const closestSet = item.last.reduce((prev, curr) => {
+            return Math.abs(curr.reps - target) < Math.abs(prev.reps - target)
+              ? curr
+              : prev
+          }, item.last[0])
+
+          let newWeight = parseFloat(closestSet.weight)
+
+          // Increase weight only if previous reps >= target
+          if (closestSet.reps >= target) {
+            newWeight += 10
+          }
+
+          return { reps: target, weight: newWeight }
+        })
+      } else {
+        // Subsequent clicks: just add +10 lbs to all sets
+        return prevSets.map((s) => ({
+          reps: parseInt(s.reps),
+          weight: parseFloat(s.weight) + 10
+        }))
+      }
+    })
   }
 
   if (!isExpanded) return null
@@ -130,6 +170,13 @@ const FormData = ({
         <div className={`${className}__strategy`}>
           Suggested Sets | Pyramid Strategy
         </div>
+        {item.last?.length ? (
+          <div className={`${className}__increase-btn`} onClick={increase}>
+            Lift More
+          </div>
+        ) : (
+          ''
+        )}
         <div className={`${className}__set-header`}>
           <span>Set</span>
           <span>Reps</span>

@@ -114,4 +114,24 @@ button.workout-list__save {
   transition: all 0.3s;
 }
 
+/* Increase btn */
+.workout-list__increase-btn {
+  font-size: smaller;
+  border-radius: 4px;
+  background-color: transparent;
+  color: #ffd900;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: center;
+  box-shadow: none;
+}
+
+.workout-list__increase-btn:hover {
+  background-color: rgba(255, 217, 0, 0.1);
+  box-shadow: 0 0 4px rgba(255, 217, 0, 0.3);
+}
+
+
 
