@@ -71,6 +71,53 @@ router.get('/overview', async (req, res) => {
   }
 });
 
+// GET /api/logs/charts?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
+router.get('/charts', async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    const now = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(now.getFullYear() - 1);
+
+    const start = startDate ? new Date(startDate) : oneYearAgo;
+    const end = endDate ? new Date(endDate) : now;
+
+    // Fetch logs in the date range
+    const logs = await Log.find({
+      date: { $gte: start, $lte: end },
+    }).lean();
+
+    // Aggregate by date and exercise
+    const chartMap = {};
+
+    logs.forEach(log => {
+      const dateKey = log.date.toISOString().split('T')[0]; // YYYY-MM-DD
+      const exercise = log.exerciseNameSnapshot || 'Unknown Exercise';
+
+      if (!chartMap[dateKey]) {
+        chartMap[dateKey] = {};
+      }
+
+      if (!chartMap[dateKey][exercise]) {
+        chartMap[dateKey][exercise] = 0;
+      }
+
+      chartMap[dateKey][exercise] += log.sets * log.reps * log.weight;
+    });
+
+    // Convert to sorted array with exercises as keys
+    const chartData = Object.entries(chartMap)
+      .map(([date, exercises]) => ({ date, ...exercises }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    res.json(chartData);
+  } catch (err) {
+    console.error('Error fetching chart data:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // GET /api/logs/:date
 router.get('/:date', async (req, res) => {
   try {
