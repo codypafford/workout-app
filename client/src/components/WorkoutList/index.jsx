@@ -165,7 +165,7 @@ const WorkoutList = ({
                   className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}
                   onClick={() => openGoogleSearch(item.name)}
                 >
-                  link
+                  🔗
                 </div>
                 {/* <div className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}>
                   {item.image ? (
