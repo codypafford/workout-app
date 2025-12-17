@@ -67,6 +67,13 @@ const WorkoutList = ({
     await refresh()
   }
 
+  const openGoogleSearch = (searchTerm) => {
+    const url = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
+      searchTerm
+    )}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
   if (focusId && focusId !== id) {
     return <></>
   }
@@ -95,7 +102,7 @@ const WorkoutList = ({
           onClick={() => setConfirmModalOpen(true)}
           className={`${ROOT_CN}__trash`}
         >
-          {isPlanned ? '' : (<>🗑️</>)}
+          {isPlanned ? '' : <>🗑️</>}
         </div>
       </div>
 
@@ -153,6 +160,12 @@ const WorkoutList = ({
                   >
                     View All Progress
                   </Link>
+                </div>
+                <div
+                  className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}
+                  onClick={() => openGoogleSearch(item.name)}
+                >
+                  link
                 </div>
                 {/* <div className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}>
                   {item.image ? (

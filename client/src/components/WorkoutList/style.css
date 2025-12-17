@@ -174,11 +174,13 @@
 
   /* Keep thumbnail aligned right */
   .workout-list__col--thumb {
-    width: 44px; /* slightly bigger than before to fit larger thumb */
+    width: fit-content; /* slightly bigger than before to fit larger thumb */
+    min-width: 2rem;
     display: flex;
+    flex: 0 !important;
     align-items: center;
     justify-content: flex-end;
-    margin-left: 0.5rem;
+    margin-left: 0 !important;
   }
 
   .workout-list__meta {
