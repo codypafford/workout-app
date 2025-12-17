@@ -1,0 +1,76 @@
+/* style.css */
+
+.charts-view {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f5f6fa;
+  color: #333;
+}
+
+.charts-view__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.charts-view__range-selector,
+.charts-view__exercise-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.charts-view__range-label,
+.charts-view__exercise-selector label {
+  font-weight: 600;
+}
+
+.charts-view__range-input,
+.charts-view__exercise-selector select {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.charts-view__refresh-btn {
+  padding: 6px 15px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.charts-view__refresh-btn:hover {
+  background-color: #357abd;
+}
+
+.charts-view__chart-block {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.charts-view__chart-title {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.charts-view__loading,
+.charts-view__error,
+.charts-view__empty {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 20px 0;
+  color: #666;
+}

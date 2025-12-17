@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchLogsOverview } from '../../proxies'
+import ChartView from '../ChartsView' // your new chart component
 import './style.css'
 
 const LogsOverview = () => {
   const [logs, setLogs] = useState([])
+  const [view, setView] = useState('overview') // 'overview' | 'charts'
 
   useEffect(() => {
     const loadLogs = async () => {
@@ -25,27 +27,41 @@ const LogsOverview = () => {
         <Link to="/" className="logs-overview__breadcrumb-link">← Back to Workouts</Link>
       </div>
 
-      <h2 className='logs-overview__title'>Workout Logs</h2>
+      <div className="logs-overview__header">
+        <h2 className='logs-overview__title'>Workout Logs</h2>
+        <button
+          className="logs-overview__toggle-btn"
+          onClick={() =>
+            setView((prev) => (prev === 'overview' ? 'charts' : 'overview'))
+          }
+        >
+          {view === 'overview' ? 'Charts' : 'Overview'}
+        </button>
+      </div>
 
-      <ul className='logs-overview__list'>
-        {logs
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .map((log) => {
-            const activeGroups = log.groups.filter((g) => g.workouts.length > 0)
-            if (activeGroups.length === 0) return null
+      {view === 'overview' ? (
+        <ul className='logs-overview__list'>
+          {logs
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .map((log) => {
+              const activeGroups = log.groups.filter((g) => g.workouts.length > 0)
+              if (activeGroups.length === 0) return null
 
-            return (
-              <li key={log.date} className='logs-overview__item'>
-                <Link to={`/logs/${log.date}`} className='logs-overview__link'>
-                  <strong className='logs-overview__date'>{log.date}</strong> —{' '}
-                  <span className='logs-overview__groups'>
-                    {activeGroups.map((g) => g.name).join(', ')}
-                  </span>
-                </Link>
-              </li>
-            )
-          })}
-      </ul>
+              return (
+                <li key={log.date} className='logs-overview__item'>
+                  <Link to={`/logs/${log.date}`} className='logs-overview__link'>
+                    <strong className='logs-overview__date'>{log.date}</strong> —{' '}
+                    <span className='logs-overview__groups'>
+                      {activeGroups.map((g) => g.name).join(', ')}
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
+        </ul>
+      ) : (
+        <ChartView />
+      )}
     </div>
   )
 }

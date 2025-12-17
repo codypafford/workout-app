@@ -84,7 +84,7 @@ const FormData = ({
   const increase = () => {
     if (!item.last || !item.last.length) return
 
-    const targetReps = [16, 12, 8]
+    const targetReps = [16, 12, 8] // pyramid strategy
 
     setSets((prevSets) => {
       // Check if this is the first time: any set not matching pyramid?
@@ -207,6 +207,9 @@ const FormData = ({
             >
               <option value='' disabled>
                 lbs
+              </option>
+              <option value={1}>
+                No Equipment
               </option>
               {[...Array(250)].map((_, n) => {
                 const v = n * 5
