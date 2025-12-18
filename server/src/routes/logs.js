@@ -100,17 +100,23 @@ router.get('/charts', async (req, res) => {
       }
 
       if (!chartMap[dateKey][exercise]) {
-        chartMap[dateKey][exercise] = 0;
+        chartMap[dateKey][exercise] = {
+          totalWeight: 0,
+          sets: []
+        };
       }
 
-      chartMap[dateKey][exercise] += log.sets * log.reps * log.weight;
+      chartMap[dateKey][exercise].totalWeight += log.sets * log.reps * log.weight;
+      chartMap[dateKey][exercise].sets.push({
+        reps: log.reps,
+        weight: log.weight
+      })
     });
 
     // Convert to sorted array with exercises as keys
     const chartData = Object.entries(chartMap)
       .map(([date, exercises]) => ({ date, ...exercises }))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
-
     res.json(chartData);
   } catch (err) {
     console.error('Error fetching chart data:', err);

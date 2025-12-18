@@ -12,6 +12,7 @@ import {
   ResponsiveContainer
 } from 'recharts'
 import { fetchChartData } from '../../proxies'
+import { ExerciseTooltip } from './Tooltips'
 import './style.css'
 
 const COLORS = [
@@ -45,7 +46,6 @@ const ChartsView = () => {
     setError(null)
     try {
       const data = await fetchChartData(startDate, endDate)
-
       // Collect all exercises
       const exercisesSet = new Set()
       data.forEach((day) => {
@@ -58,10 +58,21 @@ const ChartsView = () => {
 
       // Normalize data so every day has all exercises
       const normalizedData = data.map((day) => {
-        const newDay = { date: day.date }
+        const newDay = {
+          date: day.date,
+          _meta: {}
+        }
+
         exercisesArray.forEach((ex) => {
-          newDay[ex] = day[ex] || null
+          const exerciseData = day[ex]
+
+          newDay[ex] = exerciseData?.totalWeight ?? null
+
+          if (exerciseData) {
+            newDay._meta[ex] = exerciseData
+          }
         })
+
         return newDay
       })
       setChartData(normalizedData)
@@ -132,7 +143,7 @@ const ChartsView = () => {
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis dataKey='date' />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<ExerciseTooltip />} />
             <Legend />
             {selectedExercise && (
               <Line
@@ -154,7 +165,7 @@ const ChartsView = () => {
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis dataKey='date' />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<ExerciseTooltip />} />
             <Legend />
             {selectedExercise && (
               <Bar

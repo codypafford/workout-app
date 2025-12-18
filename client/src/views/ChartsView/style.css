@@ -74,3 +74,51 @@
   margin: 20px 0;
   color: #666;
 }
+
+/* Tooltips */
+.charts-view__tooltip {
+  background: rgba(20, 20, 20, 0.87);
+  color: #f5f5f5;
+  padding: 12px 14px;
+  border-radius: 10px;
+  min-width: 220px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+}
+
+.charts-view__tooltip-date {
+  font-size: 11px;
+  color: #b0b0b0;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.charts-view__tooltip-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #ffffff;
+}
+
+.charts-view__tooltip-total {
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #82ca9d;
+}
+
+.charts-view__tooltip-sets {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6px;
+  margin-top: 6px;
+}
+
+.charts-view__tooltip-set {
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 2px 0;
+  color: #e0e0e0;
+}
+

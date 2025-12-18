@@ -58,7 +58,7 @@ const App = () => {
       <nav>
         <Link to="/">Home</Link> | <Link to="/logs">Logs</Link> |{' '}
         <Link to="/exercises">Exercises</Link> |{' '}
-        <Link to="/plan-workout">Planned Workout</Link>
+        <Link to="/plan-workout">Plan Workout</Link>
       </nav>
 
       <main>
