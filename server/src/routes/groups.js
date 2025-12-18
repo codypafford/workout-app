@@ -7,6 +7,7 @@ const router = Router()
 
 router.get('/', async (req, res) => {
   try {
+    console.log('getting groups')
     const groups = await Group.find({ isActive: true })
       .populate({
         path: 'exerciseIds',
