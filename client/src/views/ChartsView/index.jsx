@@ -60,7 +60,7 @@ const ChartsView = () => {
       const normalizedData = data.map((day) => {
         const newDay = { date: day.date }
         exercisesArray.forEach((ex) => {
-          newDay[ex] = day[ex] || 0
+          newDay[ex] = day[ex] || null
         })
         return newDay
       })
@@ -84,8 +84,6 @@ const ChartsView = () => {
 
   if (loading) return <p className='charts-view__loading'>Loading charts...</p>
   if (error) return <p className='charts-view__error'>{error}</p>
-  //   if (!chartData.length) return <p className="charts-view__empty">No data for this range</p>
-
   return (
     <div className='charts-view'>
       <div className='charts-view__controls'>
@@ -139,6 +137,7 @@ const ChartsView = () => {
             {selectedExercise && (
               <Line
                 type='monotone'
+                connectNulls
                 dataKey={selectedExercise}
                 stroke={COLORS[0]}
                 name={selectedExercise}

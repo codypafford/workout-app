@@ -74,7 +74,6 @@ router.get('/overview', async (req, res) => {
 // GET /api/logs/charts?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
 router.get('/charts', async (req, res) => {
   try {
-    console.log('get charts')
     const { startDate, endDate } = req.query;
 
     const now = new Date();
