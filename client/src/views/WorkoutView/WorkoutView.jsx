@@ -98,9 +98,11 @@ const WorkoutView = () => {
       💪
       <div className={`${ROOT_CN}__header`}>
         <div className={`${ROOT_CN}__title`}>Workout Groups&nbsp;</div>
-        <button onClick={() => setModalOpen(true)}>
-          <span className={`${ROOT_CN}__add-icon`}>+</span>
-        </button>
+        {activeTab == 'all' && (
+          <button onClick={() => setModalOpen(true)}>
+            <span className={`${ROOT_CN}__add-icon`}>+</span>
+          </button>
+        )}
       </div>
       <div className={`${ROOT_CN}__planned-workout-header`}>
         <span
