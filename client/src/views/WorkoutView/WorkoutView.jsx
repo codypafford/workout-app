@@ -65,6 +65,7 @@ const WorkoutView = () => {
 
   // Initial load
   useEffect(() => {
+    console.log('loading workout view')
     const savedTab = localStorage.getItem('workoutActiveTab') || 'all'
     setActiveTab(savedTab)
 
@@ -124,6 +125,7 @@ const WorkoutView = () => {
         onClose={() => setModalOpen(false)}
         onSubmit={addWorkoutGroupSubmit}
       />
+      {/* TODO: the below component really should eb called GroupData */}
       {groupData.map((group) => (
         <ExerciseRow
           focusId={focusId}

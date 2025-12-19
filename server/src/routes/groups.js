@@ -113,6 +113,61 @@ router.get('/', async (req, res) => {
   }
 })
 
+// routes/groupRoutes.js
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    // Fetch group and populate active exercises
+    const group = await Group.findOne({ _id: id, isActive: true })
+      .populate({ path: 'exerciseIds', match: { isActive: true } })
+      .lean()
+
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' })
+    }
+
+    // Transform exercises for frontend
+    const exercises = group.exerciseIds.map((exercise) => ({
+      id: exercise._id,
+      name: exercise.name,
+      image: exercise.photo || ''
+    }))
+
+    // Return group info + exercises
+    res.json({
+      id: group._id,
+      groupName: group.name,
+      exercises
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
+})
+
+// routes/groupRoutes.js
+router.post('/:id/remove-exercise', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { exerciseId } = req.body;
+
+    const group = await Group.findById(id);
+    if (!group) return res.status(404).json({ message: "Group not found" });
+
+    // Remove the exercise from the group
+    group.exerciseIds = group.exerciseIds.filter(
+      (eId) => eId.toString() !== exerciseId
+    );
+
+    const updatedGroup = await group.save();
+    res.json({ message: "Exercise removed from group", group: updatedGroup });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.post('/', async (req, res) => {
   try {
     const { name } = req.body

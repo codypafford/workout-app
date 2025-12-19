@@ -6,6 +6,21 @@ export async function getGroups() {
   return res.json()
 }
 
+export async function getGroupById(groupId) {
+  const res = await fetch(`${baseUri}/api/groups/${groupId}`)
+  return res.json()
+}
+
+export const removeExerciseFromGroup = async (groupId, exerciseId) => {
+  const res = await fetch(`/api/groups/${groupId}/remove-exercise`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ exerciseId }),
+  });
+  if (!res.ok) throw new Error("Failed to remove exercise");
+  return res.json();
+};
+
 export async function addWorkoutGroup(groupData) {
   try {
     const response = await fetch(`${baseUri}/api/groups`, {

@@ -6,6 +6,7 @@ import ExercisesView from './views/ExercisesView'
 import LogsOverview from './views/LogsOverview'
 import LogsByDate from './views/LogsByDate'
 import PlanWorkout from './views/PlanWorkout'
+import ModifyGroupView from './views/ModifyGroupView'
 
 import './App.css'
 
@@ -69,6 +70,7 @@ const App = () => {
           <Route path="/logs" element={<LogsOverview />} />
           <Route path="/logs/:date" element={<LogsByDate />} />
           <Route path="/plan-workout" element={<PlanWorkout />} />
+          <Route path="/group/:id" element={<ModifyGroupView />} />
         </Routes>
       </main>
     </div>

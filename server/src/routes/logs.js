@@ -82,12 +82,12 @@ router.get('/charts', async (req, res) => {
 
     const start = startDate ? new Date(startDate) : oneYearAgo;
     const end = endDate ? new Date(endDate) : now;
+    end.setDate(end.getDate() + 1);
 
     // Fetch logs in the date range
     const logs = await Log.find({
       date: { $gte: start, $lte: end },
     }).lean();
-
     // Aggregate by date and exercise
     const chartMap = {};
 

@@ -20,31 +20,16 @@ const WorkoutList = ({
   const [expandedItemId, setExpandedItemId] = useState(null)
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false)
   const [confirmModalOpen, setConfirmModalOpen] = useState(false)
-  const [enlargedImage, setEnlargedImage] = useState(null) // new state for image modal
   const [doneExercises, setDoneExercises] = useState({})
 
   const rowRefs = useRef({})
 
-  const toggleItem = (id) => {
-    setExpandedItemId((prev) => (prev === id ? null : id))
+  const toggleItem = (exerciseId) => {
+    setExpandedItemId((prev) => (prev === exerciseId ? null : exerciseId))
   }
 
   const markAsDone = (exerciseId) => {
     setDoneExercises((prev) => ({ ...prev, [exerciseId]: true }))
-  }
-  const handleImageUpload = (e, id) => {
-    // const file = e.target.files?.[0]
-    // if (!file) return
-    // const reader = new FileReader()
-    // reader.onload = () => {
-    //   setExerciseItems((prev) =>
-    //     prev.map((item) =>
-    //       item.id === id ? { ...item, image: reader.result } : item
-    //     )
-    //   )
-    // }
-    // reader.readAsDataURL(file)
-    // TODO: would call async method to upload image from here and use cloud image storage
   }
 
   useEffect(() => {
@@ -59,7 +44,6 @@ const WorkoutList = ({
   const deleteGroup = async () => {
     await deleteWorkoutGroup(id)
     await refresh()
-    // TODO: this would not delete any data. It would just mark the group is not active so that I can keep all the logs associated with it and would hide it from UI
   }
 
   const onAddExercise = async (exercise) => {
@@ -75,37 +59,53 @@ const WorkoutList = ({
   }
 
   if (focusId && focusId !== id) {
-    return <></>
+    return null
   }
 
   const inStartMode = focusId === id
 
   return (
     <div className={ROOT_CN}>
-      {/* Group Header */}
+      {/* Header */}
       <div className={`${ROOT_CN}__header`}>
-        <div
-          onClick={() => {
-            if (inStartMode) {
-              setFocusId(null)
-            } else {
-              setFocusId(id)
-            }
-          }}
-        >
-          {!isPlanned ? (inStartMode ? 'Stop' : 'Start') : ''}
+        {!isPlanned && (
+          <button
+            className={`${ROOT_CN}__start-btn ${
+              inStartMode ? 'is-active' : ''
+            }`}
+            onClick={() => setFocusId(inStartMode ? null : id)}
+          >
+            {inStartMode ? 'Stop' : 'Start'}
+          </button>
+        )}
+
+        <div className={`${ROOT_CN}__title`}>
+          {groupName}{' '}
+          <span>
+            {' '}
+            <Link
+              style={{ fontSize: '18px' }}
+              to={`/group/${id}`}
+              className={`${ROOT_CN}__view-link`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              ⚙
+            </Link>
+          </span>
         </div>
-        <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
-          {groupName}
-        </div>
-        <div
-          onClick={() => setConfirmModalOpen(true)}
-          className={`${ROOT_CN}__trash`}
-        >
-          {isPlanned ? '' : <>🗑️</>}
-        </div>
+
+        {!isPlanned && (
+          <button
+            className={`${ROOT_CN}__icon-btn danger`}
+            onClick={() => setConfirmModalOpen(true)}
+            aria-label='Delete workout group'
+          >
+            🗑️
+          </button>
+        )}
       </div>
 
+      {/* Body */}
       <div className={`${ROOT_CN}__body`}>
         {!isPlanned && (
           <div className={`${ROOT_CN}__meta`}>
@@ -114,11 +114,13 @@ const WorkoutList = ({
             </button>
           </div>
         )}
+
         <AddWorkoutModal
           show={exerciseModalOpen}
           onClose={() => setExerciseModalOpen(false)}
           onAdd={onAddExercise}
         />
+
         <ConfirmModal
           show={confirmModalOpen}
           header='Delete Group?'
@@ -126,6 +128,7 @@ const WorkoutList = ({
           onClose={() => setConfirmModalOpen(false)}
           onSubmit={deleteGroup}
         />
+
         {exerciseItems.map((item) => {
           const isExpanded = expandedItemId === item.id
 
@@ -135,74 +138,54 @@ const WorkoutList = ({
               className={`${ROOT_CN}__item-container`}
               ref={(el) => (rowRefs.current[item.id] = el)}
             >
-              {/* Main Row */}
-              <div className={`${ROOT_CN}__row`}>
-                <div className={`${ROOT_CN}__col ${ROOT_CN}__col--name`}>
+              {/* Row */}
+              <div
+                className={`${ROOT_CN}__row`}
+                onClick={() => toggleItem(item.id)}
+              >
+                <div className={`${ROOT_CN}__name`}>
                   <span
                     className={`${ROOT_CN}__expand-name ${
                       doneExercises[item.id]
                         ? `${ROOT_CN}__expand-name--done`
                         : ''
                     }`}
-                    onClick={() => toggleItem(item.id)}
                   >
-                    {item.name}&nbsp;
-                    <span className={`${ROOT_CN}__arrow`}>
-                      {isExpanded ? '▲' : '▼'}
-                    </span>
+                    {item.name}
                   </span>
                 </div>
 
-                <div className={`${ROOT_CN}__col ${ROOT_CN}__col--link`}>
+                <div className={`${ROOT_CN}__actions`}>
                   <Link
                     to={`/exercise/${item.id}`}
                     className={`${ROOT_CN}__view-link`}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    View All Progress
+                    Progress
                   </Link>
+
+                  <button
+                    className={`${ROOT_CN}__icon-btn`}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      openGoogleSearch(item.name)
+                    }}
+                    aria-label='Search exercise'
+                  >
+                    🔍
+                  </button>
+
+                  <span
+                    className={`${ROOT_CN}__chevron ${
+                      isExpanded ? 'is-expanded' : ''
+                    }`}
+                  >
+                    ▶
+                  </span>
                 </div>
-                <div
-                  className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}
-                  onClick={() => openGoogleSearch(item.name)}
-                >
-                  🔗
-                </div>
-                {/* <div className={`${ROOT_CN}__col ${ROOT_CN}__col--thumb`}>
-                  {item.image ? (
-                    <img
-                      src={item.image}
-                      alt='gym_photo'
-                      className={`${ROOT_CN}__thumb`}
-                      onClick={(e) => {
-                        e.stopPropagation() // prevent expanding the row
-                        setEnlargedImage(item.image)
-                      }}
-                    />
-                  ) : (
-                    <>
-                      <button
-                        className={`${ROOT_CN}__add-thumb-btn`}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          document
-                            .getElementById(`img-input-${item.id}`)
-                            .click()
-                        }}
-                      >
-                        +
-                      </button>
-                      <input
-                        id={`img-input-${item.id}`}
-                        type='file'
-                        accept='image/*'
-                        style={{ display: 'none' }}
-                        onChange={(e) => handleImageUpload(e, item.id)}
-                      />
-                    </>
-                  )}
-                </div> */}
               </div>
 
+              {/* Expanded content */}
               <FormData
                 isExpanded={isExpanded}
                 className={ROOT_CN}
@@ -212,20 +195,6 @@ const WorkoutList = ({
                 refresh={refresh}
                 markAsDone={markAsDone}
               />
-
-              {/* Image Modal */}
-              {enlargedImage && (
-                <div
-                  className={`${ROOT_CN}__image-modal`}
-                  onClick={() => setEnlargedImage(null)}
-                >
-                  <img
-                    src={enlargedImage}
-                    alt='Enlarged'
-                    className={`${ROOT_CN}__image-modal-content`}
-                  />
-                </div>
-              )}
             </div>
           )
         })}

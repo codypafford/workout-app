@@ -1,11 +1,20 @@
+/* ===========================
+   ROOT
+=========================== */
+
 .logs-overview {
   max-width: 700px;
   margin: 20px auto;
   padding: 16px;
   background: #f4f4f4;
-  border-radius: 8px;
+  border-radius: 12px;
   color: #333;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
+
+/* ===========================
+   BREADCRUMB
+=========================== */
 
 .logs-overview__breadcrumb {
   margin-bottom: 12px;
@@ -14,11 +23,69 @@
 .logs-overview__breadcrumb-link {
   text-decoration: none;
   color: #007bff;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.logs-overview__breadcrumb-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* ===========================
+   HEADER & TOGGLE
+=========================== */
+
+.logs-overview__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
 .logs-overview__title {
-  margin: 0 0 16px 0;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
+
+/* Pill toggle container */
+.logs-overview__toggle {
+  display: flex;
+  border: 1px solid #007bff;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+/* Individual toggle button */
+.logs-overview__toggle-btn {
+  padding: 6px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #007bff;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  font-size: 0.9rem;
+}
+
+.logs-overview__toggle-btn.is-active {
+  background: #007bff;
+  color: #fff;
+}
+
+.logs-overview__toggle-btn:not(:last-child) {
+  border-right: 1px solid #007bff;
+}
+
+.logs-overview__toggle-btn:hover {
+  background: rgba(0, 123, 255, 0.1);
+}
+
+/* ===========================
+   LIST
+=========================== */
 
 .logs-overview__list {
   list-style: none;
@@ -27,13 +94,22 @@
 }
 
 .logs-overview__item {
-  padding: 8px 0;
-  border-bottom: 1px solid #ddd;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.logs-overview__item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .logs-overview__link {
   text-decoration: none;
-  color: #555;
+  color: #333;
   display: block;
 }
 
@@ -43,8 +119,41 @@
 
 .logs-overview__date {
   font-weight: 600;
+  margin-right: 6px;
 }
 
 .logs-overview__groups {
   font-style: italic;
+  color: #555;
+}
+
+/* ===========================
+   CHART VIEW CONTAINER
+=========================== */
+
+.logs-overview__chart-container {
+  margin-top: 16px;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media (max-width: 480px) {
+  .logs-overview {
+    padding: 12px;
+  }
+
+  .logs-overview__title {
+    font-size: 1.25rem;
+  }
+
+  .logs-overview__toggle-btn {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+  }
+
+  .logs-overview__item {
+    padding: 10px 12px;
+  }
 }

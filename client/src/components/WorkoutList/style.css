@@ -1,194 +1,300 @@
+/* ===========================
+   ROOT
+=========================== */
+
 .workout-list {
-  background-color: rgb(38, 118, 165);
-  color: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-top: 16px;
-  font-size: 16px; /* larger base font for mobile */
+  background: rgb(38, 118, 165);
+  border-radius: 14px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  color: #f5f5f5;
 }
 
-/* Header row */
+/* ===========================
+   HEADER
+=========================== */
+
 .workout-list__header {
-  display: flex;
-  justify-content: space-evenly;
-  background: white;
-  color: black;
-  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.workout-list__title {
+  font-size: 1.1rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
-/* Body rows */
-.workout-list__body {
-  display: flex;
-  flex-direction: column;
-}
+/* ===========================
+   BUTTONS
+=========================== */
 
-.workout-list__row {
-  display: flex;
-  padding: 12px 16px;
-  border-top: 1px solid #eee;
-  flex-wrap: wrap; /* allow wrapping on small screens */
-}
-
-.workout-list__row:hover {
-  background: rgb(127, 165, 187);
-}
-
-/* Columns */
-.workout-list__col {
-  flex: 1;
-  min-width: 80px; /* prevent collapsing on mobile */
-}
-
-.workout-list__col--thumb {
-  width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-left: 0.5rem;
-}
-
-/* Thumbnails */
-.workout-list__thumb {
-  width: 40px; /* increased from 32px */
-  height: 40px; /* increased from 32px */
-  object-fit: cover;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.workout-list__start-btn {
+  background: transparent;
+  border: 1px solid #ffd900;
+  color: #ffd900;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-/* Add button */
-.workout-list__add-thumb-btn {
-  color: black;
-  width: 32px;
-  height: 32px;
-  border: 1px solid #aaa;
-  background: white;
-  font-size: 20px;
+.workout-list__start-btn:hover {
+  background: rgba(255, 217, 0, 0.15);
+}
+
+.workout-list__start-btn.is-active {
+  background: #ffd900;
+  color: #000;
+}
+
+.workout-list__icon-btn {
+  background: transparent;
+  border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  opacity: 0.7;
+  font-size: 1rem;
+  padding: 0.25rem;
+  transition: opacity 0.15s ease;
 }
 
-/* Meta buttons */
+.workout-list__icon-btn:hover {
+  opacity: 1;
+}
+
+.workout-list__icon-btn.danger {
+  color: #ff6b6b;
+}
+
+/* ===========================
+   META
+=========================== */
+
 .workout-list__meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  color: white;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 16px;
-  padding: 0.5rem 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .workout-list__meta button {
-  color: white;
-  background: none;
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 16px;
+  background: transparent;
+  border: 1px dashed rgba(255, 217, 0, 0.5);
+  color: #ffd900;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .workout-list__meta button:hover {
-  color: black;
+  background: rgba(255, 217, 0, 0.1);
 }
 
-/* Trash Icon */
-.workout-list__trash {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  color: white;
+/* ===========================
+   ROW
+=========================== */
+
+.workout-list__item-container {
+  margin-bottom: 0.5rem;
+}
+
+.workout-list__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 16px;
+  padding: 0.75rem 0.5rem;
+  border-radius: 10px;
   cursor: pointer;
-  user-select: none;
+  transition: background 0.15s ease;
 }
 
-/* View All Progress link */
+.workout-list__row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.workout-list__name {
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+/* ===========================
+   ACTIONS
+=========================== */
+
+.workout-list__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .workout-list__view-link {
-  color: #ffd700; /* gold for distinct color */
-  font-size: 16px;
-  text-decoration: underline;
+  font-size: 0.75rem;
+  color: #ffd900;
+  text-decoration: none;
+  opacity: 0.8;
 }
 
 .workout-list__view-link:hover {
-  color: #ffa500; /* darker gold on hover */
-}
-
-/* Expandable group name */
-.workout-list__expand-name {
-  font-weight: 600;
-  cursor: pointer;
-  color: white; /* distinct from link */
-}
-
-.workout-list__expand-name:hover {
+  opacity: 1;
   text-decoration: underline;
 }
 
-/* Arrow next to expandable name */
-.workout-list__arrow {
-  font-size: 0.8em;
-  margin-left: 4px;
+.workout-list__chevron {
+  transition: transform 0.2s ease;
+  opacity: 0.6;
+  font-size: 0.8rem;
 }
 
-/* Image modal */
-.workout-list__image-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
+.workout-list__chevron.is-expanded {
+  transform: rotate(90deg);
+}
+
+/* ===========================
+   EXPANDED CONTENT
+=========================== */
+
+.workout-list__item-container > div:last-child {
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(255, 217, 0, 0.2);
+}
+
+/* ===========================
+   DONE STATE
+=========================== */
+
+.workout-list__expand-name--done {
+  text-decoration: line-through;
+  color: #4caf50;
+  opacity: 0.55;
+  transition: all 0.3s ease;
+}
+
+/* ===========================
+   HISTORY / SET TABLE
+=========================== */
+
+.workout-list__history {
+  display: flex !important;
+  justify-content: space-evenly;
+  gap: 1rem;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.workout-list__set-table {
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.workout-list__set-header {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  font-size: 11px;
+  color: #ffd900;
+  margin-bottom: 4px;
+  padding: 0 4px;
+}
+
+.workout-list__set-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr;
+  padding-right: 1rem;
+  gap: 0.5rem;
   align-items: center;
-  z-index: 9999;
-  cursor: pointer;
+  margin-bottom: 6px;
 }
 
-.workout-list__image-modal-content {
-  max-width: 90%;
-  max-height: 90%;
+.workout-list__set-number {
+  font-size: 13px;
+  text-align: center;
+  color: #ffd900;
+}
+
+.workout-list__set-row select {
+  height: 34px;
+  font-size: 14px;
+  padding: 4px 6px;
+}
+
+/* ===========================
+   SAVE / DONE
+=========================== */
+
+button.workout-list__save {
+  margin-top: 0.5rem;
+  border: 2px solid #ffd900;
+  color: #ffd900 !important;
+  background: transparent;
   border-radius: 8px;
-  box-shadow: 0 0 10px #000;
 }
 
-/* Make the component responsive */
+.workout-list__mark-done {
+  background: #28a745 !important;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.workout-list__mark-done:hover {
+  background: #218838;
+}
+
+.workout-list__done-label {
+  color: #28a745;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* ===========================
+   HIGHLIGHT
+=========================== */
+
+.workout-list__entry--highlight {
+  background-color: rgba(255, 217, 0, 0.25);
+  border-left: 4px solid #ffd900;
+  padding-left: 6px;
+  animation: highlightFade 2s ease-out forwards;
+}
+
+@keyframes highlightFade {
+  from {
+    background-color: rgba(255, 217, 0, 0.4);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+/* ===========================
+   STRATEGY TEXT
+=========================== */
+
+.workout-list__strategy {
+  color: rgb(144, 236, 144);
+  font-size: 12px;
+  margin-bottom: 1rem;
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
 @media (max-width: 480px) {
+  .workout-list {
+    padding: 0.75rem;
+  }
+
   .workout-list__row {
-    display: flex;
-    align-items: center; /* vertically center content */
-    padding: 12px 16px;
-    border-top: 1px solid #eee;
-    gap: 8px; /* spacing between columns */
-    flex-wrap: nowrap; /* keep items on one line */
+    padding: 0.6rem 0.4rem;
   }
-
-  /* Keep thumbnail aligned right */
-  .workout-list__col--thumb {
-    width: fit-content; /* slightly bigger than before to fit larger thumb */
-    min-width: 2rem;
-    display: flex;
-    flex: 0 !important;
-    align-items: center;
-    justify-content: flex-end;
-    margin-left: 0 !important;
-  }
-
-  .workout-list__meta {
-    justify-content: space-evenly;
-  }
-}
-
-/* Scroll to */
-.workout-list__item-container {
-  scroll-margin-top: 80px;
 }

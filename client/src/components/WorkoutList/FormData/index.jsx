@@ -208,11 +208,9 @@ const FormData = ({
               <option value='' disabled>
                 lbs
               </option>
-              <option value={1}>
-                No Equipment
-              </option>
+              <option value={1}>No Equipment</option>
               {[...Array(250)].map((_, n) => {
-                const v = n * 5
+                const v = (n + 1) * 5
                 return (
                   <option key={v} value={v}>
                     {v}
