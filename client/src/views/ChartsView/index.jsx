@@ -14,15 +14,11 @@ import {
 import { fetchChartData } from '../../proxies'
 import { ExerciseTooltip } from './Tooltips'
 import MultiSelectDropdown from '../../components/MultiSelectDropDown'
+import ExerciseFrequencyChart from './ExerciseFrequencyChart'
+import RollingAverageChart from './RollingAveragesChart'
 import './style.css'
 
-const COLORS = [
-  '#8884d8',
-  '#82ca9d',
-  '#ffc658',
-  '#ff7f50',
-  '#8dd1e1',
-]
+const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#8dd1e1']
 
 const ChartsView = () => {
   const [chartData, setChartData] = useState([])
@@ -125,7 +121,13 @@ const ChartsView = () => {
         <ResponsiveContainer width='100%' height={300}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray='3 3' />
-            <XAxis dataKey='date' />
+            <XAxis
+              dataKey='date'
+              tickFormatter={(dateStr) => {
+                const d = new Date(dateStr)
+                return `${d.getMonth() + 1}/${d.getDate()}` // MM/DD
+              }}
+            />
             <YAxis />
             <Tooltip content={<ExerciseTooltip />} />
             <Legend />
@@ -148,7 +150,13 @@ const ChartsView = () => {
         <ResponsiveContainer width='100%' height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray='3 3' />
-            <XAxis dataKey='date' />
+            <XAxis
+              dataKey='date'
+              tickFormatter={(dateStr) => {
+                const d = new Date(dateStr)
+                return `${d.getMonth() + 1}/${d.getDate()}` // MM/DD
+              }}
+            />
             <YAxis />
             <Tooltip content={<ExerciseTooltip />} />
             <Legend />
@@ -162,6 +170,22 @@ const ChartsView = () => {
             ))}
           </BarChart>
         </ResponsiveContainer>
+      </div>
+
+      <div className='charts-view__chart-block'>
+        <ExerciseFrequencyChart
+          data={chartData}
+          selectedExercises={selectedExercises}
+          colors={COLORS}
+        />
+      </div>
+
+      <div className='charts-view__chart-block'>
+        <RollingAverageChart
+          data={chartData}
+          selectedExercises={selectedExercises}
+          colors={COLORS}
+        />
       </div>
     </div>
   )
