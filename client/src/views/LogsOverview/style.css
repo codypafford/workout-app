@@ -75,13 +75,11 @@
   color: #fff;
 }
 
-.logs-overview__toggle-btn:not(:last-child) {
-  border-right: 1px solid #007bff;
+.logs-overview__toggle-btn:focus {
+  outline: none;
+  box-shadow: none;
 }
 
-.logs-overview__toggle-btn:hover {
-  background: rgba(0, 123, 255, 0.1);
-}
 
 /* ===========================
    LIST

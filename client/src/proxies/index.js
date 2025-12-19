@@ -12,7 +12,7 @@ export async function getGroupById(groupId) {
 }
 
 export const removeExerciseFromGroup = async (groupId, exerciseId) => {
-  const res = await fetch(`/api/groups/${groupId}/remove-exercise`, {
+  const res = await fetch(`${baseUri}/api/groups/${groupId}/remove-exercise`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ exerciseId }),
