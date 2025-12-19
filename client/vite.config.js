@@ -6,6 +6,7 @@ export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd())
   return defineConfig({
     plugins: [react()],
+    base: '/',
     server: {
       proxy: {
         '/api': {
