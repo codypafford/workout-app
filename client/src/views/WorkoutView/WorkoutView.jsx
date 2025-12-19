@@ -65,7 +65,6 @@ const WorkoutView = () => {
 
   // Initial load
   useEffect(() => {
-    console.log('loading workout view')
     const savedTab = localStorage.getItem('workoutActiveTab') || 'all'
     setActiveTab(savedTab)
 

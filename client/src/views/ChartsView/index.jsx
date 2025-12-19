@@ -13,6 +13,7 @@ import {
 } from 'recharts'
 import { fetchChartData } from '../../proxies'
 import { ExerciseTooltip } from './Tooltips'
+import MultiSelectDropdown from '../../components/MultiSelectDropDown'
 import './style.css'
 
 const COLORS = [
@@ -36,17 +37,14 @@ const ChartsView = () => {
     d.setFullYear(d.getFullYear() - 1)
     return d.toISOString().split('T')[0]
   })
-  const [endDate, setEndDate] = useState(
-    () => new Date().toISOString().split('T')[0]
-  )
-  const [selectedExercise, setSelectedExercise] = useState('')
+  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0])
+  const [selectedExercises, setSelectedExercises] = useState([]) // <-- multiple
 
   const loadChartData = async () => {
     setLoading(true)
     setError(null)
     try {
       const data = await fetchChartData(startDate, endDate)
-      // Collect all exercises
       const exercisesSet = new Set()
       data.forEach((day) => {
         Object.keys(day).forEach((key) => {
@@ -56,30 +54,19 @@ const ChartsView = () => {
       const exercisesArray = [...exercisesSet].sort()
       setAllExercises(exercisesArray)
 
-      // Normalize data so every day has all exercises
       const normalizedData = data.map((day) => {
-        const newDay = {
-          date: day.date,
-          _meta: {}
-        }
-
+        const newDay = { date: day.date, _meta: {} }
         exercisesArray.forEach((ex) => {
           const exerciseData = day[ex]
-
           newDay[ex] = exerciseData?.totalWeight ?? null
-
-          if (exerciseData) {
-            newDay._meta[ex] = exerciseData
-          }
+          if (exerciseData) newDay._meta[ex] = exerciseData
         })
-
         return newDay
       })
       setChartData(normalizedData)
 
-      // Set default selected exercise if not already set
-      if (!selectedExercise && exercisesArray.length > 0) {
-        setSelectedExercise(exercisesArray[0])
+      if (selectedExercises.length === 0 && exercisesArray.length > 0) {
+        setSelectedExercises([exercisesArray[0]])
       }
     } catch (err) {
       console.error('Failed to fetch chart data:', err)
@@ -93,8 +80,17 @@ const ChartsView = () => {
     loadChartData()
   }, [startDate, endDate])
 
+  const toggleExercise = (exercise) => {
+    setSelectedExercises((prev) =>
+      prev.includes(exercise)
+        ? prev.filter((e) => e !== exercise)
+        : [...prev, exercise]
+    )
+  }
+
   if (loading) return <p className='charts-view__loading'>Loading charts...</p>
   if (error) return <p className='charts-view__error'>{error}</p>
+
   return (
     <div className='charts-view'>
       <div className='charts-view__controls'>
@@ -120,22 +116,13 @@ const ChartsView = () => {
           </label>
         </div>
 
-        <div className='charts-view__exercise-selector'>
-          <label>
-            Exercise:
-            <select
-              value={selectedExercise}
-              onChange={(e) => setSelectedExercise(e.target.value)}
-            >
-              {allExercises.map((name) => (
-                <option key={name} value={name}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <MultiSelectDropdown
+          options={allExercises}
+          selected={selectedExercises}
+          onChange={setSelectedExercises}
+        />
       </div>
+
       <div className='charts-view__chart-block'>
         <h3>Total Weight by Exercise</h3>
         <ResponsiveContainer width='100%' height={300}>
@@ -145,15 +132,16 @@ const ChartsView = () => {
             <YAxis />
             <Tooltip content={<ExerciseTooltip />} />
             <Legend />
-            {selectedExercise && (
+            {selectedExercises.map((ex, idx) => (
               <Line
+                key={ex}
                 type='monotone'
                 connectNulls
-                dataKey={selectedExercise}
-                stroke={COLORS[0]}
-                name={selectedExercise}
+                dataKey={ex}
+                stroke={COLORS[idx % COLORS.length]}
+                name={ex}
               />
-            )}
+            ))}
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -167,13 +155,14 @@ const ChartsView = () => {
             <YAxis />
             <Tooltip content={<ExerciseTooltip />} />
             <Legend />
-            {selectedExercise && (
+            {selectedExercises.map((ex, idx) => (
               <Bar
-                dataKey={selectedExercise}
-                fill={COLORS[0]}
-                name={selectedExercise}
+                key={ex}
+                dataKey={ex}
+                fill={COLORS[idx % COLORS.length]}
+                name={ex}
               />
-            )}
+            ))}
           </BarChart>
         </ResponsiveContainer>
       </div>

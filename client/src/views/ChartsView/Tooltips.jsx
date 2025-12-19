@@ -3,7 +3,12 @@ export const ExerciseTooltip = ({ active, payload, label }) => {
 
   const value = payload[0].value
   const key = payload[0].name
+  const count =  payload.length
   const currMetaData = payload[0].payload._meta[key]
+
+  if (count > 1) {
+    return <div className="charts-view__tooltip">Select only one workout to view detailed data.</div>
+  }
 
   return (
     <div className="charts-view__tooltip">
