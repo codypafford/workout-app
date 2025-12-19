@@ -23,20 +23,33 @@ const LogsOverview = () => {
 
   return (
     <div className='logs-overview'>
-      <div className="logs-overview__breadcrumb">
-        <Link to="/" className="logs-overview__breadcrumb-link">← Back to Workouts</Link>
+      <div className='logs-overview__breadcrumb'>
+        <Link to='/' className='logs-overview__breadcrumb-link'>
+          ← Back to Workouts
+        </Link>
       </div>
 
-      <div className="logs-overview__header">
+      <div className='logs-overview__header'>
         <h2 className='logs-overview__title'>Workout Logs</h2>
-        <button
-          className="logs-overview__toggle-btn"
-          onClick={() =>
-            setView((prev) => (prev === 'overview' ? 'charts' : 'overview'))
-          }
-        >
-          {view === 'overview' ? 'Charts' : 'Overview'}
-        </button>
+
+        <div className='logs-overview__toggle'>
+          <button
+            className={`logs-overview__toggle-btn ${
+              view === 'overview' ? 'is-active' : ''
+            }`}
+            onClick={() => setView('overview')}
+          >
+            Overview
+          </button>
+          <button
+            className={`logs-overview__toggle-btn ${
+              view === 'charts' ? 'is-active' : ''
+            }`}
+            onClick={() => setView('charts')}
+          >
+            Charts
+          </button>
+        </div>
       </div>
 
       {view === 'overview' ? (
@@ -44,13 +57,19 @@ const LogsOverview = () => {
           {logs
             .sort((a, b) => new Date(b.date) - new Date(a.date))
             .map((log) => {
-              const activeGroups = log.groups.filter((g) => g.workouts.length > 0)
+              const activeGroups = log.groups.filter(
+                (g) => g.workouts.length > 0
+              )
               if (activeGroups.length === 0) return null
 
               return (
                 <li key={log.date} className='logs-overview__item'>
-                  <Link to={`/logs/${log.date}`} className='logs-overview__link'>
-                    <strong className='logs-overview__date'>{log.date}</strong> —{' '}
+                  <Link
+                    to={`/logs/${log.date}`}
+                    className='logs-overview__link'
+                  >
+                    <strong className='logs-overview__date'>{log.date}</strong>{' '}
+                    —{' '}
                     <span className='logs-overview__groups'>
                       {activeGroups.map((g) => g.name).join(', ')}
                     </span>

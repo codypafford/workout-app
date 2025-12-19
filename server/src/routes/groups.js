@@ -148,6 +148,7 @@ router.get('/:id', async (req, res) => {
 
 // routes/groupRoutes.js
 router.post('/:id/remove-exercise', async (req, res) => {
+  console.log('hit the remove endpoint')
   try {
     const { id } = req.params;
     const { exerciseId } = req.body;
