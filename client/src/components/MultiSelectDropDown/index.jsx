@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import './style.css';
+
+const MAX_SELECTION = 5;
 
 const MultiSelectDropdown = ({ options, selected, onChange }) => {
   const [open, setOpen] = useState(false);
@@ -16,44 +19,43 @@ const MultiSelectDropdown = ({ options, selected, onChange }) => {
   }, []);
 
   const toggleOption = (option) => {
-    onChange(selected.includes(option)
-      ? selected.filter(o => o !== option)
-      : [...selected, option]
-    );
+    if (selected.includes(option)) {
+      // Deselect option
+      onChange(selected.filter((o) => o !== option));
+    } else {
+      // Prevent adding more than MAX_SELECTION
+      if (selected.length < MAX_SELECTION) {
+        onChange([...selected, option]);
+      } else {
+        alert(`You can select up to ${MAX_SELECTION} exercises.`);
+      }
+    }
   };
 
   return (
-    <div className="multi-select-dropdown" ref={ref} style={{ position: 'relative', width: '200px' }}>
+    <div className="multi-select-dropdown" ref={ref}>
       <button
         type="button"
+        className="multi-select-dropdown__button"
         onClick={() => setOpen(!open)}
-        style={{ width: '100%', textAlign: 'left' }}
       >
-        {selected.length === 0 ? 'Select Exercises' : selected.join(', ')}
+        {selected.length === 0
+          ? 'Select Exercises'
+          : selected.join(', ')}
+        <span className="multi-select-dropdown__arrow">{open ? '▲' : '▼'}</span>
       </button>
+
       {open && (
-        <div
-          className="dropdown-menu"
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            border: '1px solid #ccc',
-            maxHeight: '200px',
-            overflowY: 'auto',
-            background: 'white',
-            zIndex: 10,
-          }}
-        >
-          {options.map(option => (
-            <label key={option} style={{ display: 'block', padding: '4px 8px' }}>
+        <div className="multi-select-dropdown__menu">
+          {options.map((option) => (
+            <label key={option} className="multi-select-dropdown__option">
               <input
                 type="checkbox"
                 checked={selected.includes(option)}
                 onChange={() => toggleOption(option)}
+                className="multi-select-dropdown__checkbox"
               />
-              {option}
+              <span className="multi-select-dropdown__option-label">{option}</span>
             </label>
           ))}
         </div>

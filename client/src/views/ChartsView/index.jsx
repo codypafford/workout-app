@@ -21,10 +21,7 @@ const COLORS = [
   '#82ca9d',
   '#ffc658',
   '#ff7f50',
-  '#a28fd0',
   '#8dd1e1',
-  '#d0ed57',
-  '#d88484'
 ]
 
 const ChartsView = () => {
