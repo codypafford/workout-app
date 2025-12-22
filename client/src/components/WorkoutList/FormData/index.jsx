@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { addLog } from '../../../proxies'
-import { pyramidStrategy } from './strategyHelpers'
+import { STRATEGIES } from './strategyHelpers'
 import './style.css'
 
 const EMPTY_SET = { reps: '', weight: '' }
@@ -21,13 +21,22 @@ const FormData = ({
   ])
   const [highlightLogIds, setHighlightLogIds] = useState([])
   const [done, setDone] = useState(false)
+  const [selectedStrategy, setSelectedStrategy] = useState('pyramid')
 
   useEffect(() => {
-    if (isExpanded) {
-      const suggestedSets = pyramidStrategy(item.last)
+    if (!isExpanded) return
+    if (item.last?.length && item.last[item.last.length - 1].selectedStrategy) {
+      setSelectedStrategy(selectedStrategy)
+    }
+    const strategy = STRATEGIES[selectedStrategy]
+    if (!strategy) return
+
+    const suggestedSets = strategy.generate(item.last)
+
+    if (suggestedSets.length) {
       setSets(suggestedSets)
     }
-  }, [isExpanded, item.last])
+  }, [isExpanded, item.last, selectedStrategy])
 
   const updateSet = (index, key, value) => {
     setSets((prev) =>
@@ -62,7 +71,8 @@ const FormData = ({
           groupNameSnapshot: groupName,
           sets: 1,
           reps: parseInt(completedSets[i].reps),
-          weight: parseFloat(completedSets[i].weight)
+          weight: parseFloat(completedSets[i].weight),
+          selectedStrategy
         }
 
         const savedLog = await addLog(logPayload)
@@ -82,43 +92,15 @@ const FormData = ({
   }
 
   const increase = () => {
-    if (!item.last || !item.last.length) return
+    const strategy = STRATEGIES[selectedStrategy]
+    if (!strategy?.increase) return
 
-    const targetReps = [16, 12, 8] // pyramid strategy
-
-    setSets((prevSets) => {
-      // Check if this is the first time: any set not matching pyramid?
-      const firstRun = prevSets.some(
-        (s, i) => parseInt(s.reps) !== targetReps[i]
-      )
-
-      if (firstRun) {
-        // First click: intelligently align reps and weight
-        return targetReps.map((target, i) => {
-          // Find the last set closest to this target
-          const closestSet = item.last.reduce((prev, curr) => {
-            return Math.abs(curr.reps - target) < Math.abs(prev.reps - target)
-              ? curr
-              : prev
-          }, item.last[0])
-
-          let newWeight = parseFloat(closestSet.weight)
-
-          // Increase weight only if previous reps >= target
-          if (closestSet.reps >= target) {
-            newWeight += 10
-          }
-
-          return { reps: target, weight: newWeight }
-        })
-      } else {
-        // Subsequent clicks: just add +10 lbs to all sets
-        return prevSets.map((s) => ({
-          reps: parseInt(s.reps),
-          weight: parseFloat(s.weight) + 10
-        }))
-      }
-    })
+    setSets((prevSets) =>
+      strategy.increase({
+        prevSets,
+        lastSets: item.last
+      })
+    )
   }
 
   if (!isExpanded) return null
@@ -168,8 +150,19 @@ const FormData = ({
       {/* Inputs */}
       <div className={`${className}__set-table`}>
         <div className={`${className}__strategy`}>
-          Suggested Sets | Pyramid Strategy
+          Suggested Sets |{' '}
+          <select
+            value={selectedStrategy}
+            onChange={(e) => setSelectedStrategy(e.target.value)}
+          >
+            {Object.entries(STRATEGIES).map(([key, strat]) => (
+              <option key={key} value={key}>
+                {strat.label}
+              </option>
+            ))}
+          </select>
         </div>
+
         {item.last?.length ? (
           <div className={`${className}__increase-btn`} onClick={increase}>
             Lift More
@@ -191,9 +184,7 @@ const FormData = ({
               value={set.reps}
               onChange={(e) => updateSet(i, 'reps', e.target.value)}
             >
-              <option value='' disabled>
-                Reps
-              </option>
+              <option value=''>Reps</option>
               {[...Array(50)].map((_, n) => (
                 <option key={n + 1} value={n + 1}>
                   {n + 1}
@@ -205,9 +196,7 @@ const FormData = ({
               value={set.weight}
               onChange={(e) => updateSet(i, 'weight', e.target.value)}
             >
-              <option value='' disabled>
-                lbs
-              </option>
+              <option value=''>lbs</option>
               <option value={1}>No Equipment</option>
               {[...Array(250)].map((_, n) => {
                 const v = (n + 1) * 5

@@ -14,6 +14,8 @@ const logSchema = new mongoose.Schema({
   reps: { type: Number, required: true },
   weight: { type: Number, required: true },
 
+  selectedStrategy: { type: String, required: false},
+
   notes: { type: String, default: '' },
 }, { timestamps: true }); // includes createdAt and updatedAt automatically
 

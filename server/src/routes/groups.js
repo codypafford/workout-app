@@ -38,6 +38,7 @@ router.get('/', async (req, res) => {
               sets: '$sets',
               reps: '$reps',
               weight: '$weight',
+              selectedStrategy: '$selectedStrategy',
               date: '$date'
             }
           },
@@ -75,6 +76,7 @@ router.get('/', async (req, res) => {
             sets: log.sets,
             reps: log.reps,
             weight: log.weight,
+            selectedStrategy: log.selectedStrategy,
             logId: log._id
           }))
 
@@ -148,7 +150,6 @@ router.get('/:id', async (req, res) => {
 
 // routes/groupRoutes.js
 router.post('/:id/remove-exercise', async (req, res) => {
-  console.log('hit the remove endpoint')
   try {
     const { id } = req.params;
     const { exerciseId } = req.body;

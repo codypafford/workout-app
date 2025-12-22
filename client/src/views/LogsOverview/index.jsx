@@ -7,12 +7,14 @@ import './style.css'
 const LogsOverview = () => {
   const [logs, setLogs] = useState([])
   const [view, setView] = useState('overview') // 'overview' | 'charts'
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadLogs = async () => {
       try {
         const data = await fetchLogsOverview()
         setLogs(data)
+        setLoading(false)
       } catch (err) {
         console.error('Failed to fetch logs overview:', err)
       }
@@ -20,6 +22,8 @@ const LogsOverview = () => {
 
     loadLogs()
   }, [])
+
+  if (loading) return <div>Loading Logs...</div>
 
   return (
     <div className='logs-overview'>

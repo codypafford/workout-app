@@ -6,7 +6,7 @@ const router = Router()
 // POST /api/logs
 router.post('/', async (req, res) => {
   try {
-    const { exerciseId, exerciseNameSnapshot, groupId, groupNameSnapshot, sets, reps, weight, date } = req.body;
+    const { exerciseId, exerciseNameSnapshot, groupId, groupNameSnapshot, sets, reps, weight, selectedStrategy, date } = req.body;
 
     if (!exerciseId || !groupId || !sets || !reps || !weight) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -20,10 +20,12 @@ router.post('/', async (req, res) => {
       sets,
       reps,
       weight,
+      selectedStrategy,
       date: date ? new Date(date) : new Date(),
     });
 
     const savedLog = await log.save();
+    console.log('saving: ', savedLog)
     res.status(201).json(savedLog);
   } catch (err) {
     console.error('Error creating log:', err);
