@@ -34,9 +34,16 @@ const WorkoutList = ({
 
   useEffect(() => {
     if (expandedItemId && rowRefs.current[expandedItemId]) {
-      rowRefs.current[expandedItemId].scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+      const element = rowRefs.current[expandedItemId]
+      const bannerOffset = 60 // height of your banner in px
+
+      // get element's position relative to document
+      const elementTop = element.getBoundingClientRect().top + window.scrollY
+
+      // scroll to element minus banner height
+      window.scrollTo({
+        top: elementTop - bannerOffset,
+        behavior: 'smooth'
       })
     }
   }, [expandedItemId])
