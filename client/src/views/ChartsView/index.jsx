@@ -12,9 +12,9 @@ const ChartsView = () => {
   const [allExercises, setAllExercises] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [startDate, setStartDate] = useState(() => {
+  const [startDate, _] = useState(() => {
     const d = new Date()
-    d.setFullYear(d.getFullYear() - 1)
+    d.setMonth(d.getMonth() - 6)
     return d.toISOString().split('T')[0]
   })
   const [selectedExercises, setSelectedExercises] = useState([]) // <-- multiple
