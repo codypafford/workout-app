@@ -73,7 +73,7 @@ const ChartsView = () => {
   return (
     <div className='charts-view'>
       <div className='charts-view__controls'>
-        <div className='charts-view__range-selector'>
+        {/* <div className='charts-view__range-selector'>
           <label>
             Start Date:
             <input
@@ -83,7 +83,7 @@ const ChartsView = () => {
               onChange={(e) => setStartDate(e.target.value)}
             />
           </label>
-        </div>
+        </div> */}
 
         <MultiSelectDropdown
           options={allExercises}
