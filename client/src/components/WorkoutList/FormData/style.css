@@ -207,10 +207,15 @@
   padding: 8px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.048);
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 1rem; /* 16px */
   resize: vertical;
+}
+
+.workout-list__notes-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
 }
 
 .workout-list__save-btn {

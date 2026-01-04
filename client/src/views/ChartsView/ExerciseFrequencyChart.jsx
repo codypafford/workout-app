@@ -1,13 +1,12 @@
 import { useState, useMemo } from 'react'
+import { ExerciseFreqTooltip } from './Tooltips'
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  BarChart,
-  Bar,
   Legend,
   ResponsiveContainer
 } from 'recharts'
@@ -15,34 +14,54 @@ import moment from 'moment'
 
 const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
   const [frequency, setFrequency] = useState('1w') // '1w', '3m', '6m'
-
-  // Helper to get start of the week/month for grouping
   const getPeriodKey = (dateStr) => {
     const d = moment(dateStr)
     if (frequency === '1w') return d.startOf('week').format('YYYY-MM-DD')
-    if (frequency === '3m') return d.startOf('month').format('YYYY-MM')
-    if (frequency === '6m') return d.startOf('month').format('YYYY-MM')
+    if (frequency === '3m' || frequency === '6m')
+      return d.startOf('month').format('YYYY-MM')
     return d.format('YYYY-MM-DD')
   }
 
   const freqData = useMemo(() => {
     const periodMap = {}
 
-    // Filter data for last X period
+    // Determine cutoff date
     const cutoff = moment()
       .subtract(
         frequency === '1w' ? 1 : frequency === '3m' ? 3 : 6,
         frequency === '1w' ? 'weeks' : 'months'
       )
+      .startOf(frequency === '1w' ? 'week' : 'month')
 
+    const end = moment().endOf('day')
+
+    // Generate all periods between cutoff and today
+    let current = cutoff.clone()
+    while (current.isSameOrBefore(end)) {
+      const key =
+        frequency === '1w'
+          ? current.format('YYYY-MM-DD')
+          : current.format('YYYY-MM')
+      periodMap[key] = { period: key }
+      selectedExercises.forEach((ex) => (periodMap[key][ex] = 0))
+      current.add(
+        frequency === '1w' ? 1 : 1,
+        frequency === '1w' ? 'week' : 'month'
+      )
+    }
+
+    // Fill in actual data
     data
-      .filter((d) => moment(d.date).isSameOrAfter(cutoff))
+      .filter((day) => moment(day.date).isSameOrAfter(cutoff))
       .forEach((day) => {
         const period = getPeriodKey(day.date)
-        if (!periodMap[period]) periodMap[period] = { period }
         selectedExercises.forEach((ex) => {
-          if (!periodMap[period][ex]) periodMap[period][ex] = 0
-          if (day[ex]) periodMap[period][ex] += 1
+          const matchedKey = Object.keys(day).find(
+            (key) => key.toLowerCase() === ex.toLowerCase()
+          )
+          if (matchedKey) {
+            periodMap[period][ex] += day[matchedKey] ?? 0
+          }
         })
       })
 
@@ -76,12 +95,11 @@ const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
             dataKey='period'
             tickFormatter={(str) => {
               const d = moment(str)
-              if (frequency === '1w') return d.format('M/D')
-              return d.format('MMM YY')
+              return frequency === '1w' ? d.format('M/D') : d.format('MMM YY')
             }}
           />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<ExerciseFreqTooltip frequency={frequency} />} />
           <Legend />
           {selectedExercises.map((ex, idx) => (
             <Bar

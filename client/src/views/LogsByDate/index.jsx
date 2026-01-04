@@ -106,7 +106,7 @@ const LogsByDate = () => {
 
                           {w.notes && (
                             <p className='logs-by-date__workout-notes'>
-                              Notes: {w.notes}
+                              {w.notes}
                             </p>
                           )}
                         </li>

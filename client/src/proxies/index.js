@@ -124,8 +124,8 @@ export async function deleteLog(logId) {
   return res.json()
 }
 
-export const fetchChartData = async (startDate, endDate) => {
-  const res = await fetch(`${baseUri}/api/logs/charts?startDate=${startDate}&endDate=${endDate}`)
+export const fetchChartData = async (startDate) => {
+  const res = await fetch(`${baseUri}/api/logs/charts?startDate=${startDate}`)
   if (!res.ok) throw new Error('Failed to fetch chart data')
   return res.json()
 }

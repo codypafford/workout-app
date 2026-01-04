@@ -40,12 +40,7 @@ const WorkoutList = ({
   const toggleItem = (exerciseId) => {
     setExpandedItemId((prev) => (prev === exerciseId ? null : exerciseId))
   }
-
-  // Mark exercise as done locally
-  const markAsDone = (exerciseId) => {
-    setDoneExercises((prev) => ({ ...prev, [exerciseId]: true }))
-  }
-
+ 
   // Handle scrolling to expanded row
   useEffect(() => {
     if (expandedItemId && rowRefs.current[expandedItemId]) {
@@ -78,7 +73,7 @@ const WorkoutList = ({
         groupId: id,
         groupNameSnapshot: groupName
       })
-      markAsDone(item.id) // update local state to trigger strike-through
+      await refresh()
     } catch (err) {
       console.error('Failed to mark as done', err)
     }
@@ -203,7 +198,6 @@ const WorkoutList = ({
                 groupId={id}
                 groupName={groupName}
                 refresh={refresh}
-                markAsDone={markAsDone}
               />
             </div>
           )

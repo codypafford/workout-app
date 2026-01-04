@@ -34,7 +34,6 @@ const FormData = ({
       setHighlight(true)
       setTimeout(() => setHighlight(false), 2000)
 
-      setNotes('')
       refresh() // reload data if needed
     } catch (err) {
       console.error('Failed to save log:', err)

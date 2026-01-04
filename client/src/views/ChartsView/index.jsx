@@ -1,18 +1,6 @@
 import { useState, useEffect } from 'react'
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  BarChart,
-  Bar,
-  Legend,
-  ResponsiveContainer
-} from 'recharts'
+import { ResponsiveContainer } from 'recharts'
 import { fetchChartData } from '../../proxies'
-import { ExerciseTooltip } from './Tooltips'
 import MultiSelectDropdown from '../../components/MultiSelectDropDown'
 import ExerciseFrequencyChart from './ExerciseFrequencyChart'
 import './style.css'
@@ -29,58 +17,44 @@ const ChartsView = () => {
     d.setFullYear(d.getFullYear() - 1)
     return d.toISOString().split('T')[0]
   })
-  const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0])
   const [selectedExercises, setSelectedExercises] = useState([]) // <-- multiple
 
   const loadChartData = async () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchChartData(startDate, endDate)
+      const data = await fetchChartData(startDate) // only pass startDate
       const exercisesSet = new Set()
       data.forEach((day) => {
         Object.keys(day).forEach((key) => {
           if (key !== 'date') exercisesSet.add(key)
         })
       })
-      console.log('data', data)
       const exercisesArray = [...exercisesSet].sort()
       setAllExercises(exercisesArray)
 
       const normalizedData = data.map((day) => {
-        const newDay = { date: day.date, _meta: {} }
+        const newDay = { date: day.date }
         exercisesArray.forEach((ex) => {
           const exerciseData = day[ex]
-          newDay[ex] = exerciseData?.totalWeight ?? null
-          if (exerciseData) newDay._meta[ex] = exerciseData
+          newDay[ex] = exerciseData?.count ?? 0
         })
         return newDay
       })
       setChartData(normalizedData)
 
-      if (selectedExercises.length === 0 && exercisesArray.length > 0) {
-        setSelectedExercises([exercisesArray[0]])
-      }
+      // Calculate top 5 exercises by total count
+      const exerciseTotals = exercisesArray.map((ex) => {
+        const total = normalizedData.reduce(
+          (sum, day) => sum + (day[ex] || 0),
+          0
+        )
+        return { exercise: ex, total }
+      })
+      exerciseTotals.sort((a, b) => b.total - a.total)
+      const top5 = exerciseTotals.slice(0, 5).map((e) => e.exercise)
 
-      const groupMap = data
-        .map((day) => {
-          return Object.entries(day).map((x) => ({
-            exercise: x[0],
-            group: x[1].group
-          }))
-        })
-        .reduce((acc, curr) => {
-          curr.forEach((element) => {
-            console.log('element: ', element)
-            if (element.group) {
-              console.log('group: ', element.group)
-              acc[element.group] ||= []
-              acc[element.group].push(element.exercise)
-            }
-          })
-          return acc
-        }, {})
-      console.log('map: ', groupMap)
+      setSelectedExercises(top5)
     } catch (err) {
       console.error('Failed to fetch chart data:', err)
       setError('Failed to fetch chart data')
@@ -91,15 +65,7 @@ const ChartsView = () => {
 
   useEffect(() => {
     loadChartData()
-  }, [startDate, endDate])
-
-  const toggleExercise = (exercise) => {
-    setSelectedExercises((prev) =>
-      prev.includes(exercise)
-        ? prev.filter((e) => e !== exercise)
-        : [...prev, exercise]
-    )
-  }
+  }, [startDate])
 
   if (loading) return <p className='charts-view__loading'>Loading charts...</p>
   if (error) return <p className='charts-view__error'>{error}</p>
@@ -113,18 +79,8 @@ const ChartsView = () => {
             <input
               type='date'
               value={startDate}
-              max={endDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </label>
-          <label>
-            End Date:
-            <input
-              type='date'
-              value={endDate}
-              min={startDate}
               max={new Date().toISOString().split('T')[0]}
-              onChange={(e) => setEndDate(e.target.value)}
+              onChange={(e) => setStartDate(e.target.value)}
             />
           </label>
         </div>
@@ -143,7 +99,6 @@ const ChartsView = () => {
           colors={COLORS}
         />
       </div>
-
     </div>
   )
 }

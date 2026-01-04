@@ -31,9 +31,7 @@ router.post('/', async (req, res) => {
 
     if (existingLog) {
       if (notes && notes.trim()) {
-        existingLog.notes = existingLog.notes
-          ? existingLog.notes + '\n' + notes
-          : notes;
+        existingLog.notes = notes;
         const updatedLog = await existingLog.save();
         return res.status(200).json(updatedLog);
       } else {
@@ -52,7 +50,6 @@ router.post('/', async (req, res) => {
     });
 
     const savedLog = await log.save();
-    console.log('saving: ', savedLog);
     res.status(201).json(savedLog);
   } catch (err) {
     console.error('Error creating log:', err);
@@ -100,54 +97,41 @@ router.get('/overview', async (req, res) => {
   }
 });
 
-// GET /api/logs/charts?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
+// GET /api/logs/charts?startDate=YYYY-MM-DD
 router.get('/charts', async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate } = req.query;
+    const timeZone = 'America/New_York';
 
-    const now = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(now.getFullYear() - 1);
+    const now = moment.tz(timeZone); // today in Eastern
+    const oneYearAgo = now.clone().subtract(1, 'year');
 
-    const start = startDate ? new Date(startDate) : oneYearAgo;
-    const end = endDate ? new Date(endDate) : now;
-    end.setDate(end.getDate() + 1);
+    const start = startDate ? moment.tz(startDate, timeZone) : oneYearAgo;
+    const end = now.clone().add(1, 'day'); // include today
 
-    // Fetch logs in the date range
     const logs = await Log.find({
-      date: { $gte: start, $lte: end },
+      date: { $gte: start.toDate(), $lte: end.toDate() },
     }).lean();
-    // Aggregate by date and exercise
+
     const chartMap = {};
 
-    logs.forEach(log => {
-      const dateKey = log.date.toISOString().split('T')[0]; // YYYY-MM-DD
+    logs.forEach((log) => {
+      // Convert log.date to Eastern time
+      const dateKey = moment.tz(log.date, timeZone).format('YYYY-MM-DD');
+
       const exercise = log.exerciseNameSnapshot || 'Unknown Exercise';
       const group = log.groupNameSnapshot || 'Unknown Group';
 
-      if (!chartMap[dateKey]) {
-        chartMap[dateKey] = {};
-      }
+      if (!chartMap[dateKey]) chartMap[dateKey] = {};
+      if (!chartMap[dateKey][exercise]) chartMap[dateKey][exercise] = { group, count: 0 };
 
-      if (!chartMap[dateKey][exercise]) {
-        chartMap[dateKey][exercise] = {
-          totalWeight: 0,
-          sets: [],
-          group
-        };
-      }
-
-      chartMap[dateKey][exercise].totalWeight += log.sets * log.reps * log.weight;
-      chartMap[dateKey][exercise].sets.push({
-        reps: log.reps,
-        weight: log.weight
-      })
+      chartMap[dateKey][exercise].count += 1; // increment count
     });
 
-    // Convert to sorted array with exercises as keys
     const chartData = Object.entries(chartMap)
       .map(([date, exercises]) => ({ date, ...exercises }))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
+
     res.json(chartData);
   } catch (err) {
     console.error('Error fetching chart data:', err);
