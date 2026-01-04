@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import AddWorkoutModal from '../../Modals/AddWorkout'
 import ConfirmModal from '../../Modals/Confirmation'
 import FormData from './FormData'
-import { deleteWorkoutGroup, addExercise } from '../../proxies'
+import { deleteWorkoutGroup, addExercise, addLog } from '../../proxies'
 import './style.css'
 
 const WorkoutList = ({
@@ -24,23 +24,34 @@ const WorkoutList = ({
 
   const rowRefs = useRef({})
 
+  // Initialize doneExercises from API data
+  useEffect(() => {
+    const initialDone = {}
+    exerciseItems.forEach((item) => {
+      // if there are any logs for today, mark it done
+      if (item.today && item.today.length > 0) {
+        initialDone[item.id] = true
+      }
+    })
+    setDoneExercises(initialDone)
+  }, [exerciseItems])
+
+  // Toggle row expand
   const toggleItem = (exerciseId) => {
     setExpandedItemId((prev) => (prev === exerciseId ? null : exerciseId))
   }
 
+  // Mark exercise as done locally
   const markAsDone = (exerciseId) => {
     setDoneExercises((prev) => ({ ...prev, [exerciseId]: true }))
   }
 
+  // Handle scrolling to expanded row
   useEffect(() => {
     if (expandedItemId && rowRefs.current[expandedItemId]) {
       const element = rowRefs.current[expandedItemId]
-      const bannerOffset = 60 // height of your banner in px
-
-      // get element's position relative to document
+      const bannerOffset = 60
       const elementTop = element.getBoundingClientRect().top + window.scrollY
-
-      // scroll to element minus banner height
       window.scrollTo({
         top: elementTop - bannerOffset,
         behavior: 'smooth'
@@ -48,6 +59,7 @@ const WorkoutList = ({
     }
   }, [expandedItemId])
 
+  // Backend actions
   const deleteGroup = async () => {
     await deleteWorkoutGroup(id)
     await refresh()
@@ -58,17 +70,25 @@ const WorkoutList = ({
     await refresh()
   }
 
-  const openGoogleSearch = (searchTerm) => {
-    const url = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
-      searchTerm
-    )}`
-    window.open(url, '_blank', 'noopener,noreferrer')
+  const handleMarkDone = async (item) => {
+    try {
+      await addLog({
+        exerciseId: item.id,
+        exerciseNameSnapshot: item.name,
+        groupId: id,
+        groupNameSnapshot: groupName
+      })
+      markAsDone(item.id) // update local state to trigger strike-through
+    } catch (err) {
+      console.error('Failed to mark as done', err)
+    }
   }
 
-  if (focusId && focusId !== id) {
-    return null
+  const openGoogleSearch = (term) => {
+    window.open(`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(term)}`, '_blank', 'noopener,noreferrer')
   }
 
+  if (focusId && focusId !== id) return null
   const inStartMode = focusId === id
 
   return (
@@ -77,9 +97,7 @@ const WorkoutList = ({
       <div className={`${ROOT_CN}__header`}>
         {!isPlanned && (
           <button
-            className={`${ROOT_CN}__start-btn ${
-              inStartMode ? 'is-active' : ''
-            }`}
+            className={`${ROOT_CN}__start-btn ${inStartMode ? 'is-active' : ''}`}
             onClick={() => setFocusId(inStartMode ? null : id)}
           >
             {inStartMode ? 'Stop' : 'Start'}
@@ -87,14 +105,13 @@ const WorkoutList = ({
         )}
 
         <div className={`${ROOT_CN}__title`}>
-          {groupName}{' '}
+          {groupName}
           <span>
-            {' '}
             <Link
-              style={{ fontSize: '18px' }}
               to={`/group/${id}`}
               className={`${ROOT_CN}__view-link`}
               onClick={(e) => e.stopPropagation()}
+              style={{ fontSize: '18px' }}
             >
               ⚙
             </Link>
@@ -112,32 +129,32 @@ const WorkoutList = ({
         )}
       </div>
 
-      {/* Body */}
+      {/* Meta / Add Exercise */}
+      {!isPlanned && (
+        <div className={`${ROOT_CN}__meta`}>
+          <button onClick={() => setExerciseModalOpen(true)}>+ Add Exercise</button>
+        </div>
+      )}
+
+      {/* Modals */}
+      <AddWorkoutModal
+        show={exerciseModalOpen}
+        onClose={() => setExerciseModalOpen(false)}
+        onAdd={onAddExercise}
+      />
+      <ConfirmModal
+        show={confirmModalOpen}
+        header='Delete Group?'
+        bodyText='This action cannot be undone.'
+        onClose={() => setConfirmModalOpen(false)}
+        onSubmit={deleteGroup}
+      />
+
+      {/* Exercises */}
       <div className={`${ROOT_CN}__body`}>
-        {!isPlanned && (
-          <div className={`${ROOT_CN}__meta`}>
-            <button onClick={() => setExerciseModalOpen(true)}>
-              + Add Exercise
-            </button>
-          </div>
-        )}
-
-        <AddWorkoutModal
-          show={exerciseModalOpen}
-          onClose={() => setExerciseModalOpen(false)}
-          onAdd={onAddExercise}
-        />
-
-        <ConfirmModal
-          show={confirmModalOpen}
-          header='Delete Group?'
-          bodyText='This action cannot be undone.'
-          onClose={() => setConfirmModalOpen(false)}
-          onSubmit={deleteGroup}
-        />
-
         {exerciseItems.map((item) => {
           const isExpanded = expandedItemId === item.id
+          const isDone = doneExercises[item.id]
 
           return (
             <div
@@ -146,31 +163,24 @@ const WorkoutList = ({
               ref={(el) => (rowRefs.current[item.id] = el)}
             >
               {/* Row */}
-              <div
-                className={`${ROOT_CN}__row`}
-                onClick={() => toggleItem(item.id)}
-              >
+              <div className={`${ROOT_CN}__row`} onClick={() => toggleItem(item.id)}>
                 <div className={`${ROOT_CN}__name`}>
-                  <span
-                    className={`${ROOT_CN}__expand-name ${
-                      doneExercises[item.id]
-                        ? `${ROOT_CN}__expand-name--done`
-                        : ''
-                    }`}
-                  >
+                  <span className={`${ROOT_CN}__expand-name ${isDone ? `${ROOT_CN}__expand-name--done` : ''}`}>
                     {item.name}
                   </span>
                 </div>
 
                 <div className={`${ROOT_CN}__actions`}>
-                  <Link
-                    to={`/exercise/${item.id}`}
-                    className={`${ROOT_CN}__view-link`}
-                    onClick={(e) => e.stopPropagation()}
+                  <button
+                    className={`${ROOT_CN}__done-btn`}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleMarkDone(item)
+                    }}
+                    aria-label='Mark exercise as done'
                   >
-                    Progress
-                  </Link>
-
+                    ✅
+                  </button>
                   <button
                     className={`${ROOT_CN}__icon-btn`}
                     onClick={(e) => {
@@ -181,14 +191,7 @@ const WorkoutList = ({
                   >
                     🔍
                   </button>
-
-                  <span
-                    className={`${ROOT_CN}__chevron ${
-                      isExpanded ? 'is-expanded' : ''
-                    }`}
-                  >
-                    ▶
-                  </span>
+                  <span className={`${ROOT_CN}__chevron ${isExpanded ? 'is-expanded' : ''}`}>▶</span>
                 </div>
               </div>
 

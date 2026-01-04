@@ -6,7 +6,7 @@ const MAX_SELECTION = 5;
 const MultiSelectDropdown = ({ options, selected, onChange }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef();
-
+    console.log('options', options)
   // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (e) => {

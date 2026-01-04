@@ -87,34 +87,28 @@ const LogsByDate = () => {
                     key={`${group.name}-${exerciseName}`}
                     className='logs-by-date__exercise-group'
                   >
-                    <h4 className='logs-by-date__exercise-title'>
-                      {exerciseName}
-                    </h4>
-                    <span>
-                      <span className='logs-by-date__exercise-total-weight'>
-                        Total Weight Lifted:{' '}
-                        {workouts.reduce((sum, curr) => {
-                          return sum + curr.sets * curr.reps * curr.weight
-                        }, 0)} lbs
-                      </span>
-                    </span>
                     <ul className='logs-by-date__workouts-list'>
                       {workouts.map((w) => (
                         <li key={w.logId} className='logs-by-date__workout'>
-                          <span className='logs-by-date__workout-info'>
-                            {w.sets} sets x {w.reps} reps @ {w.weight} lbs
-                          </span>
+                          <div className='logs-by-date__workout-header'>
+                            <span className='logs-by-date__workout-name'>
+                              {exerciseName}
+                            </span>
+
+                            <button
+                              className='logs-by-date__delete-btn'
+                              onClick={() => handleDelete(w.logId)}
+                              aria-label='Delete workout'
+                            >
+                              🗑️
+                            </button>
+                          </div>
+
                           {w.notes && (
                             <p className='logs-by-date__workout-notes'>
                               Notes: {w.notes}
                             </p>
                           )}
-                          <span
-                            className='logs-by-date__delete-btn'
-                            onClick={() => handleDelete(w.logId)}
-                          >
-                            🗑️
-                          </span>
                         </li>
                       ))}
                     </ul>

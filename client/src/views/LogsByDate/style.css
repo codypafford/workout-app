@@ -1,5 +1,3 @@
-/* src/views/Logs/style.css */
-
 .logs-by-date {
   max-width: 700px;
   margin: 20px auto;
@@ -36,9 +34,12 @@
   font-weight: 600;
 }
 
-.logs-by-date__no-workouts {
-  font-style: italic;
-  color: #666;
+.logs-by-date__exercise-group {
+  margin-bottom: 12px;
+}
+
+.logs-by-date__exercise-title {
+  margin-bottom: 4px;
 }
 
 .logs-by-date__workouts-list {
@@ -48,9 +49,7 @@
 }
 
 .logs-by-date__workout {
-  display: flex;
-  justify-content: space-around;
-  padding: 6px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #ddd;
 }
 
@@ -58,16 +57,32 @@
   border-bottom: none;
 }
 
+/* 🔑 This controls name + trash layout */
+.logs-by-date__workout-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .logs-by-date__workout-name {
   font-weight: 600;
 }
 
-.logs-by-date__workout-info {
-  color: #555;
+.logs-by-date__delete-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.logs-by-date__delete-btn:hover {
+  opacity: 0.7;
 }
 
 .logs-by-date__workout-notes {
-  margin: 4px 0 0 0;
+  margin: 4px 0 0;
   font-style: italic;
   color: #444;
 }
@@ -77,13 +92,3 @@
   font-style: italic;
   color: #666;
 }
-
-.logs-by-date__exercise-title {
-  margin-bottom: 0;
-}
-
-.logs-by-date__exercise-total-weight {
-  font-size: small;
-  color: green;
-}
-

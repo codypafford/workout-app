@@ -84,30 +84,19 @@ const ExerciseView = () => {
       ) : (
         <div className='exercise-view__logs'>
           {sortedDates.map((date) => {
-            const totalWeight = logsByDate[date].reduce(
-              (sum, log) => sum + log.sets * log.reps * log.weight,
-              0
-            )
-
             return (
               <div key={date} className='exercise-view__log-date-group'>
                 <div className='exercise-view__log-date'>{date}</div>
-                <div className='exercise-view__log-total'>
-                  Total Weight Lifted: {totalWeight} lbs
-                </div>
-                {logsByDate[date].map((log, idx) => (
-                  <div key={idx} className='exercise-view__log'>
-                    <p className='exercise-view__log-info'>
-                      <strong>Sets:</strong> {log.sets} | <strong>Reps:</strong>{' '}
-                      {log.reps} | <strong>Weight:</strong> {log.weight} lbs
-                    </p>
-                    {log.notes && (
+
+                {logsByDate[date]
+                  .filter((log) => log.notes)
+                  .map((log, idx) => (
+                    <div key={idx} className='exercise-view__log'>
                       <p className='exercise-view__log-notes'>
                         <strong>Notes:</strong> {log.notes}
                       </p>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ))}
               </div>
             )
           })}

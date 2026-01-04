@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import moment from 'moment-timezone'
 import Group from '../models/groups.js'
 import Exercise from '../models/exercises.js'
 import Log from '../models/logs.js'
@@ -6,26 +7,52 @@ const router = Router()
 // POST /api/logs
 router.post('/', async (req, res) => {
   try {
-    const { exerciseId, exerciseNameSnapshot, groupId, groupNameSnapshot, sets, reps, weight, selectedStrategy, date } = req.body;
+    const { exerciseId, exerciseNameSnapshot, groupId, groupNameSnapshot, notes, date } = req.body;
 
-    if (!exerciseId || !groupId || !sets || !reps || !weight) {
+    if (!exerciseId || !groupId) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
+    // Use Eastern Time
+    const logDate = date ? moment.tz(date, 'America/New_York') : moment.tz('America/New_York');
+
+    // Start and end of the day in Eastern Time
+    const startOfDay = logDate.clone().startOf('day').toDate();
+    const endOfDay = logDate.clone().endOf('day').toDate();
+
+    // Check if a log already exists for this date + exerciseId + groupId + snapshots
+    const existingLog = await Log.findOne({
+      exerciseId,
+      exerciseNameSnapshot,
+      groupId,
+      groupNameSnapshot,
+      date: { $gte: startOfDay, $lte: endOfDay },
+    });
+
+    if (existingLog) {
+      if (notes && notes.trim()) {
+        existingLog.notes = existingLog.notes
+          ? existingLog.notes + '\n' + notes
+          : notes;
+        const updatedLog = await existingLog.save();
+        return res.status(200).json(updatedLog);
+      } else {
+        return res.status(200).json(existingLog);
+      }
+    }
+
+    // If no existing log, create new
     const log = new Log({
       exerciseId,
       exerciseNameSnapshot,
       groupId,
       groupNameSnapshot,
-      sets,
-      reps,
-      weight,
-      selectedStrategy,
-      date: date ? new Date(date) : new Date(),
+      notes,
+      date: logDate.toDate(), // saved as UTC internally
     });
 
     const savedLog = await log.save();
-    console.log('saving: ', savedLog)
+    console.log('saving: ', savedLog);
     res.status(201).json(savedLog);
   } catch (err) {
     console.error('Error creating log:', err);
@@ -96,6 +123,7 @@ router.get('/charts', async (req, res) => {
     logs.forEach(log => {
       const dateKey = log.date.toISOString().split('T')[0]; // YYYY-MM-DD
       const exercise = log.exerciseNameSnapshot || 'Unknown Exercise';
+      const group = log.groupNameSnapshot || 'Unknown Group';
 
       if (!chartMap[dateKey]) {
         chartMap[dateKey] = {};
@@ -104,7 +132,8 @@ router.get('/charts', async (req, res) => {
       if (!chartMap[dateKey][exercise]) {
         chartMap[dateKey][exercise] = {
           totalWeight: 0,
-          sets: []
+          sets: [],
+          group
         };
       }
 

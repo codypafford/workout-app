@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react'
 import {
   LineChart,
   Line,
@@ -10,33 +11,73 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts'
+import moment from 'moment'
 
 const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
-  const freqData = []
-  const weekMap = {}
+  const [frequency, setFrequency] = useState('1w') // '1w', '3m', '6m'
 
-  data.forEach((day) => {
-    const week = new Date(day.date).toISOString().slice(0, 7) // YYYY-MM week-ish
-    if (!weekMap[week]) weekMap[week] = { week }
-    selectedExercises.forEach((ex) => {
-      if (!weekMap[week][ex]) weekMap[week][ex] = 0
-      if (day[ex]) weekMap[week][ex] += 1 // count session
-    })
-  })
+  // Helper to get start of the week/month for grouping
+  const getPeriodKey = (dateStr) => {
+    const d = moment(dateStr)
+    if (frequency === '1w') return d.startOf('week').format('YYYY-MM-DD')
+    if (frequency === '3m') return d.startOf('month').format('YYYY-MM')
+    if (frequency === '6m') return d.startOf('month').format('YYYY-MM')
+    return d.format('YYYY-MM-DD')
+  }
 
-  Object.values(weekMap).forEach((d) => freqData.push(d))
+  const freqData = useMemo(() => {
+    const periodMap = {}
+
+    // Filter data for last X period
+    const cutoff = moment()
+      .subtract(
+        frequency === '1w' ? 1 : frequency === '3m' ? 3 : 6,
+        frequency === '1w' ? 'weeks' : 'months'
+      )
+
+    data
+      .filter((d) => moment(d.date).isSameOrAfter(cutoff))
+      .forEach((day) => {
+        const period = getPeriodKey(day.date)
+        if (!periodMap[period]) periodMap[period] = { period }
+        selectedExercises.forEach((ex) => {
+          if (!periodMap[period][ex]) periodMap[period][ex] = 0
+          if (day[ex]) periodMap[period][ex] += 1
+        })
+      })
+
+    return Object.values(periodMap)
+  }, [data, selectedExercises, frequency])
+
   return (
     <div className='charts-view__chart-block'>
-      <h3>Exercise Frequency (per week)</h3>
+      <h3>Exercise Frequency</h3>
+
+      {/* Frequency Selector */}
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          View:
+          <select
+            value={frequency}
+            onChange={(e) => setFrequency(e.target.value)}
+            style={{ marginLeft: '5px' }}
+          >
+            <option value='1w'>Last Week (per week)</option>
+            <option value='3m'>Last 3 Months (per month)</option>
+            <option value='6m'>Last 6 Months (per month)</option>
+          </select>
+        </label>
+      </div>
+
       <ResponsiveContainer width='100%' height={300}>
         <BarChart data={freqData}>
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis
-            dataKey='week'
-            tickFormatter={(weekStr) => {
-              // If weekStr is a date string
-              const d = new Date(weekStr)
-              return `${d.getMonth() + 1}/${d.getDate()}` // MM/DD
+            dataKey='period'
+            tickFormatter={(str) => {
+              const d = moment(str)
+              if (frequency === '1w') return d.format('M/D')
+              return d.format('MMM YY')
             }}
           />
           <YAxis />

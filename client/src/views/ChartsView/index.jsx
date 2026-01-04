@@ -15,7 +15,6 @@ import { fetchChartData } from '../../proxies'
 import { ExerciseTooltip } from './Tooltips'
 import MultiSelectDropdown from '../../components/MultiSelectDropDown'
 import ExerciseFrequencyChart from './ExerciseFrequencyChart'
-import RollingAverageChart from './RollingAveragesChart'
 import './style.css'
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#8dd1e1']
@@ -44,6 +43,7 @@ const ChartsView = () => {
           if (key !== 'date') exercisesSet.add(key)
         })
       })
+      console.log('data', data)
       const exercisesArray = [...exercisesSet].sort()
       setAllExercises(exercisesArray)
 
@@ -61,6 +61,26 @@ const ChartsView = () => {
       if (selectedExercises.length === 0 && exercisesArray.length > 0) {
         setSelectedExercises([exercisesArray[0]])
       }
+
+      const groupMap = data
+        .map((day) => {
+          return Object.entries(day).map((x) => ({
+            exercise: x[0],
+            group: x[1].group
+          }))
+        })
+        .reduce((acc, curr) => {
+          curr.forEach((element) => {
+            console.log('element: ', element)
+            if (element.group) {
+              console.log('group: ', element.group)
+              acc[element.group] ||= []
+              acc[element.group].push(element.exercise)
+            }
+          })
+          return acc
+        }, {})
+      console.log('map: ', groupMap)
     } catch (err) {
       console.error('Failed to fetch chart data:', err)
       setError('Failed to fetch chart data')
@@ -117,62 +137,6 @@ const ChartsView = () => {
       </div>
 
       <div className='charts-view__chart-block'>
-        <h3>Total Weight by Exercise</h3>
-        <ResponsiveContainer width='100%' height={300}>
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray='3 3' />
-            <XAxis
-              dataKey='date'
-              tickFormatter={(dateStr) => {
-                const d = new Date(dateStr)
-                return `${d.getMonth() + 1}/${d.getDate()}` // MM/DD
-              }}
-            />
-            <YAxis />
-            <Tooltip content={<ExerciseTooltip />} />
-            <Legend />
-            {selectedExercises.map((ex, idx) => (
-              <Line
-                key={ex}
-                type='monotone'
-                connectNulls
-                dataKey={ex}
-                stroke={COLORS[idx % COLORS.length]}
-                name={ex}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className='charts-view__chart-block'>
-        <h3>Total Weight by Exercise</h3>
-        <ResponsiveContainer width='100%' height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray='3 3' />
-            <XAxis
-              dataKey='date'
-              tickFormatter={(dateStr) => {
-                const d = new Date(dateStr)
-                return `${d.getMonth() + 1}/${d.getDate()}` // MM/DD
-              }}
-            />
-            <YAxis />
-            <Tooltip content={<ExerciseTooltip />} />
-            <Legend />
-            {selectedExercises.map((ex, idx) => (
-              <Bar
-                key={ex}
-                dataKey={ex}
-                fill={COLORS[idx % COLORS.length]}
-                name={ex}
-              />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className='charts-view__chart-block'>
         <ExerciseFrequencyChart
           data={chartData}
           selectedExercises={selectedExercises}
@@ -180,13 +144,6 @@ const ChartsView = () => {
         />
       </div>
 
-      <div className='charts-view__chart-block'>
-        <RollingAverageChart
-          data={chartData}
-          selectedExercises={selectedExercises}
-          colors={COLORS}
-        />
-      </div>
     </div>
   )
 }
