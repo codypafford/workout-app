@@ -8,7 +8,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  AreaChart,
+  Area
 } from 'recharts'
 import moment from 'moment'
 
@@ -43,6 +45,8 @@ const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
           ? current.format('YYYY-MM-DD')
           : current.format('YYYY-MM')
       periodMap[key] = { period: key }
+      console.log(key)
+      console.log('period: ', periodMap)
       selectedExercises.forEach((ex) => (periodMap[key][ex] = 0))
       current.add(
         frequency === '1w' ? 1 : 1,
@@ -110,6 +114,33 @@ const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
             />
           ))}
         </BarChart>
+      </ResponsiveContainer>
+
+      <ResponsiveContainer width='100%' height={300}>
+        <AreaChart data={freqData}>
+          <CartesianGrid strokeDasharray='3 3' />
+          <XAxis
+            dataKey='period'
+            tickFormatter={(str) => {
+              const d = moment(str)
+              return frequency === '1w' ? d.format('M/D') : d.format('MMM YY')
+            }}
+          />
+          <YAxis />
+          <Tooltip content={<ExerciseFreqTooltip frequency={frequency} />} />
+          <Legend />
+          {selectedExercises.map((ex, idx) => (
+            <Area
+              key={ex}
+              type='monotone'
+              dataKey={ex}
+              stackId='1'
+              stroke={colors[idx % colors.length]}
+              fill={colors[idx % colors.length]}
+              name={ex}
+            />
+          ))}
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   )
