@@ -45,8 +45,6 @@ const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
           ? current.format('YYYY-MM-DD')
           : current.format('YYYY-MM')
       periodMap[key] = { period: key }
-      console.log(key)
-      console.log('period: ', periodMap)
       selectedExercises.forEach((ex) => (periodMap[key][ex] = 0))
       current.add(
         frequency === '1w' ? 1 : 1,
