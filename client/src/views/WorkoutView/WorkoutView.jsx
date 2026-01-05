@@ -133,6 +133,7 @@ const WorkoutView = () => {
           items={group.exercises}
           key={group.id}
           groupName={group.groupName}
+          groupType={group.groupType}
           refresh={fetchGroups}
           plannedExerciseIds={plannedExerciseIds}
           isPlanned={activeTab == 'planned'}

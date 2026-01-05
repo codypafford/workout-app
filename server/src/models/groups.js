@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 const groupSchema = new mongoose.Schema({
   name: { type: String, required: true },
   isActive: { type: Boolean, default: true },
+  groupType: { type: String, default: 'exercise' }, 
   exerciseIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' }], // array of exercise ObjectIds
 }, { timestamps: true });
 

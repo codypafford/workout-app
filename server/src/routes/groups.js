@@ -37,6 +37,7 @@ router.get('/', async (req, res) => {
     const transformed = groups.map((group) => ({
       id: group._id,
       groupName: group.name,
+      groupType: group.groupType ?? 'exercise',
       exercises: group.exerciseIds.map((exercise) => {
         const todayLogsForExercise = todayLogs
           .filter(
@@ -88,7 +89,39 @@ router.get('/:id', async (req, res) => {
     res.json({
       id: group._id,
       groupName: group.name,
+      groupType: group.groupType ?? 'exercise',
       exercises
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
+})
+
+// PUT /api/groups/:id/type
+router.put('/:id/type', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { groupType } = req.body
+
+    // Validate input
+    if (!['exercise', 'stretch'].includes(groupType)) {
+      return res.status(400).json({ message: 'Invalid group type' })
+    }
+
+    const group = await Group.findOneAndUpdate(
+      { _id: id, isActive: true },
+      { $set: { groupType } },
+      { new: true }
+    ).lean()
+
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' })
+    }
+
+    res.json({
+      id: group._id,
+      groupType: group.groupType
     })
   } catch (err) {
     console.error(err)

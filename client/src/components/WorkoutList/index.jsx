@@ -10,6 +10,7 @@ const WorkoutList = ({
   id,
   items: exerciseItems,
   groupName,
+  groupType,
   focusId,
   setFocusId,
   refresh,
@@ -40,7 +41,7 @@ const WorkoutList = ({
   const toggleItem = (exerciseId) => {
     setExpandedItemId((prev) => (prev === exerciseId ? null : exerciseId))
   }
- 
+
   // Handle scrolling to expanded row
   useEffect(() => {
     if (expandedItemId && rowRefs.current[expandedItemId]) {
@@ -66,7 +67,15 @@ const WorkoutList = ({
   }
 
   const handleMarkDone = async (item) => {
+    console.log(item)
     try {
+      if (groupType !== 'exercise') {
+        setDoneExercises({
+          ...doneExercises,
+          [item.id]: true
+        })
+        return
+      }
       await addLog({
         exerciseId: item.id,
         exerciseNameSnapshot: item.name,
@@ -80,7 +89,11 @@ const WorkoutList = ({
   }
 
   const openGoogleSearch = (term) => {
-    window.open(`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(term)}`, '_blank', 'noopener,noreferrer')
+    window.open(
+      `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(term)}`,
+      '_blank',
+      'noopener,noreferrer'
+    )
   }
 
   if (focusId && focusId !== id) return null
@@ -92,7 +105,9 @@ const WorkoutList = ({
       <div className={`${ROOT_CN}__header`}>
         {!isPlanned && (
           <button
-            className={`${ROOT_CN}__start-btn ${inStartMode ? 'is-active' : ''}`}
+            className={`${ROOT_CN}__start-btn ${
+              inStartMode ? 'is-active' : ''
+            }`}
             onClick={() => setFocusId(inStartMode ? null : id)}
           >
             {inStartMode ? 'Stop' : 'Start'}
@@ -127,7 +142,9 @@ const WorkoutList = ({
       {/* Meta / Add Exercise */}
       {!isPlanned && (
         <div className={`${ROOT_CN}__meta`}>
-          <button onClick={() => setExerciseModalOpen(true)}>+ Add Exercise</button>
+          <button onClick={() => setExerciseModalOpen(true)}>
+            {`+ Add ${groupType === 'exercise' ? 'Exercise' : 'Stretch'}`}
+          </button>
         </div>
       )}
 
@@ -158,9 +175,16 @@ const WorkoutList = ({
               ref={(el) => (rowRefs.current[item.id] = el)}
             >
               {/* Row */}
-              <div className={`${ROOT_CN}__row`} onClick={() => toggleItem(item.id)}>
+              <div
+                className={`${ROOT_CN}__row`}
+                onClick={() => toggleItem(item.id)}
+              >
                 <div className={`${ROOT_CN}__name`}>
-                  <span className={`${ROOT_CN}__expand-name ${isDone ? `${ROOT_CN}__expand-name--done` : ''}`}>
+                  <span
+                    className={`${ROOT_CN}__expand-name ${
+                      isDone ? `${ROOT_CN}__expand-name--done` : ''
+                    }`}
+                  >
                     {item.name}
                   </span>
                 </div>
@@ -186,19 +210,29 @@ const WorkoutList = ({
                   >
                     🔍
                   </button>
-                  <span className={`${ROOT_CN}__chevron ${isExpanded ? 'is-expanded' : ''}`}>▶</span>
+                  {groupType === 'exercise' && (
+                    <span
+                      className={`${ROOT_CN}__chevron ${
+                        isExpanded ? 'is-expanded' : ''
+                      }`}
+                    >
+                      ▶
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Expanded content */}
-              <FormData
-                isExpanded={isExpanded}
-                className={ROOT_CN}
-                item={item}
-                groupId={id}
-                groupName={groupName}
-                refresh={refresh}
-              />
+              {groupType === 'exercise' && (
+                <FormData
+                  isExpanded={isExpanded}
+                  className={ROOT_CN}
+                  item={item}
+                  groupId={id}
+                  groupName={groupName}
+                  refresh={refresh}
+                />
+              )}
             </div>
           )
         })}

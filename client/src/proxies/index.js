@@ -21,6 +21,17 @@ export const removeExerciseFromGroup = async (groupId, exerciseId) => {
   return res.json();
 };
 
+export const updateGroupType = async (groupId, groupType) => {
+  const res = await fetch(`${baseUri}/api/groups/${groupId}/type`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ groupType })
+  })
+
+  if (!res.ok) throw new Error('Failed to update group type')
+  return res.json()
+}
+
 export async function addWorkoutGroup(groupData) {
   try {
     const response = await fetch(`${baseUri}/api/groups`, {
