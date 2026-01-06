@@ -5,7 +5,16 @@ import MultiSelectDropdown from '../../components/MultiSelectDropDown'
 import ExerciseFrequencyChart from './ExerciseFrequencyChart'
 import './style.css'
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#8dd1e1']
+const COLORS = [
+  '#8884d8', // muted purple
+  '#82ca9d', // soft green
+  '#ffc658', // warm yellow
+  '#ff7f50', // coral
+  '#8dd1e1', // light blue
+  '#a78bfa', // lavender / violet
+  '#34d399', // mint green
+  '#f472b6', // soft pink
+]
 
 const ChartsView = () => {
   const [chartData, setChartData] = useState([])

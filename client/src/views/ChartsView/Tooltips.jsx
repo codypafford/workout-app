@@ -19,12 +19,29 @@ export const ExerciseFreqTooltip = ({ active, payload, label, frequency }) => {
   }
 
   return (
-    <div style={{ background: 'white', border: '1px solid #ccc', padding: '10px' }}>
+    <div
+      style={{
+        position: 'absolute',
+        pointerEvents: 'none',
+        background: 'rgba(50, 50, 50, 0.95)',
+        backdropFilter: 'blur(6px)',
+        border: '1px solid rgba(255,255,255,0.2)',
+        padding: '10px',
+        borderRadius: '6px',
+        color: 'white',
+        zIndex: 9999,
+        top: -300,
+        left: 0,
+        minWidth: '200px',
+        maxWidth: '300px',
+        wordWrap: 'break-word'
+      }}
+    >
       <strong>
         {periodStart.format('MMM D, YYYY')} – {periodEnd.format('MMM D, YYYY')}
       </strong>
       <ul style={{ margin: 0, paddingLeft: '15px' }}>
-        {payload.map((p) => (
+        {payload.sort((a, b) => b.value - a.value).map((p) => (
           <li key={p.name} style={{ color: p.color }}>
             {p.name}: {p.value}
           </li>

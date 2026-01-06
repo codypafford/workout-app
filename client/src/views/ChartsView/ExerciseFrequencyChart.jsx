@@ -102,7 +102,7 @@ const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
           />
           <YAxis />
           <Tooltip content={<ExerciseFreqTooltip frequency={frequency} />} />
-          <Legend />
+          <Legend wrapperStyle={{ zIndex: 1 }} />
           {selectedExercises.map((ex, idx) => (
             <Bar
               key={ex}
@@ -126,7 +126,7 @@ const ExerciseFrequencyChart = ({ data, selectedExercises, colors }) => {
           />
           <YAxis />
           <Tooltip content={<ExerciseFreqTooltip frequency={frequency} />} />
-          <Legend />
+          <Legend wrapperStyle={{ zIndex: 1 }} />
           {selectedExercises.map((ex, idx) => (
             <Area
               key={ex}
